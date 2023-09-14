@@ -1,7 +1,23 @@
 
 import { Box, Button, Card, Container, Flex, Heading, Text } from "@radix-ui/themes";
+import type { GetServerSideProps } from "next";
+import prisma from "../lib/prisma";
+import { RecipeProps } from "@web/components/Recipe";
 
-export default function Home() {
+export const getServerSideProps: GetServerSideProps = async () => {
+  const recipes = await prisma.recipe.findMany();
+  return {
+    props: { recipes },
+  };
+}
+
+type Props = {
+  recipes: RecipeProps[];
+}
+
+export default function Home(props: Props) {
+  console.log({ props });
+
   return (
     <div className="min-h-screen">
       <Card
