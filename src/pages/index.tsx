@@ -12,6 +12,7 @@ import prisma from "../lib/prisma";
 import { RecipeProps } from "@web/components/Recipe";
 import Recipe from "@web/components/Recipe";
 import Layout from "@web/components/Layout";
+import AddRecipeModal from "@web/components/AddRecipeModal";
 export const getServerSideProps: GetServerSideProps = async () => {
   const recipes = await prisma.recipe.findMany({
     include: {
@@ -32,6 +33,7 @@ export default function Home(props: Props) {
 
   return (
     <Layout>
+      <AddRecipeModal />
       <Flex className="min-h-screen p-5 flex-col">
         <Flex direction="column" gap="5">
           {props.recipes.map((recipe, index) => (

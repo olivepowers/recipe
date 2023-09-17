@@ -6,4 +6,8 @@ export const prisma = globalForPrisma.prisma || new PrismaClient()
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
 
+export async function createRecipe(data: any) {
+    return await prisma.recipe.create({data,});
+}
+
 export default prisma

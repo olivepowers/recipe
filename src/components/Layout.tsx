@@ -2,7 +2,7 @@ import React from "react";
 import Header from "./Header";
 import { Flex } from "@radix-ui/themes";
 
-const Layout: React.FC = ({ children }) => {
+const Layout = ({ children }: any) => {
   return (
     <Flex direction="column">
       <Header />
