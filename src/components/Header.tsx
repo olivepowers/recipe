@@ -1,6 +1,6 @@
 import React from "react";
-import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import { Avatar, Button, Flex } from "@radix-ui/themes";
+import Link from "next/link";
 
 const Header = () => {
   return (
@@ -13,7 +13,9 @@ const Header = () => {
       {/* <Button color="cyan" variant="ghost" className="mr-auto">
         Home
       </Button> */}
-      <img src="/logo.png" alt="Logo" width={40} height={60} />
+      <Link href="/">
+        <img src="/logo.png" alt="Logo" width={40} height={60} />
+      </Link>
       <Flex gap="4" align="center">
         <Button color="cyan" variant="ghost">
           Recipe Box
