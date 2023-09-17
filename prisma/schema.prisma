@@ -15,12 +15,47 @@ model User {
   email  String   @unique
   name   String?
   Recipe Recipe[]
+  List   List[]
+  // following User[] @relation("Follow", references: [id])
+  // followers User[] @relation("Follow", references: [id])
+}
+
+// model Follow {
+//   id          Int      @id @default(autoincrement())
+//   follower    User     @relation(fields: [followerId], references: [id])
+//   followerId  Int
+//   following   User     @relation(fields: [followingId], references: [id])
+//   followingId Int
+// }
+
+model List {
+  id          Int          @id @default(autoincrement())
+  name        String
+  author      User?        @relation(fields: [authorId], references: [id])
+  authorId    Int?
+  listRecipes ListRecipe[] 
 }
 
 model Recipe {
-  id          Int      @id @default(autoincrement())
+  id          Int          @id @default(autoincrement())
   title       String
+  picture     String?
+  link        String?
+  ingredients String[]     @default([])
+  steps       String[]     @default([])
+  rating      Int?         // 1-5
+  category    String?
+  status      String?      // "to try" or "tried"
   description String?
-  author      User?    @relation(fields: [authorId], references: [id])
+  author      User?        @relation(fields: [authorId], references: [id])
   authorId    Int?
+  lists       ListRecipe[]
+}
+
+model ListRecipe {
+  listId   Int
+  recipeId Int
+  list     List    @relation(fields: [listId], references: [id])
+  recipe   Recipe  @relation(fields: [recipeId], references: [id])
+  @@id([listId, recipeId])
 }
