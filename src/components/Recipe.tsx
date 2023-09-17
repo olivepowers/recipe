@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/router";
 import {
   Box,
   Button,
@@ -20,8 +21,14 @@ export type RecipeProps = {
 };
 
 const Recipe: React.FC<{ recipe: RecipeProps }> = ({ recipe }) => {
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/recipe/" + recipe.id);
+  };
+
   return (
-    <Card size="2">
+    <Card size="2" onClick={handleClick}>
       <Flex gap="5" align="center">
         <Box>
           <Text as="div" size="4" weight="bold">
