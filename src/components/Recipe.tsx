@@ -13,8 +13,16 @@ import {
 export type RecipeProps = {
   id: number;
   title: string;
+  picture: string;
+  link: string;
+  ingredients: [];
+  steps: [];
+  rating: number;
+  category: string;
+  status: string;
   description: string;
   author: {
+    id: number;
     name: string;
     email: string;
   } | null;

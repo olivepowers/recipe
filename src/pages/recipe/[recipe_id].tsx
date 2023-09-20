@@ -1,5 +1,6 @@
 import Layout from "@web/components/Layout";
 import { RecipeProps } from "@web/components/Recipe";
+import RecipeDetails from "@web/components/RecipeDetails";
 import prisma from "@web/lib/prisma";
 import { GetServerSideProps } from "next";
 
@@ -29,12 +30,12 @@ type Props = {
 };
 
 // get :recipe_id from route
-export default function Recipe(props: Props) {
+export default function RecipePage(props: Props) {
   console.log({ props });
 
   return (
     <Layout>
-      <h1>{JSON.stringify(props)}</h1>;
+      <RecipeDetails recipe={props.recipe} />
     </Layout>
   );
 }

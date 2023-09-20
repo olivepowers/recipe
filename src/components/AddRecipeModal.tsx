@@ -41,7 +41,7 @@ const AddRecipeModal = () => {
     setRecipeData(initialRecipeData);
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     console.log({ name, value });
     setRecipeData((prevData) => ({
