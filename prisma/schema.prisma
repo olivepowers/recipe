@@ -11,11 +11,12 @@ datasource db {
 }
 
 model User {
-  id     Int      @id @default(autoincrement())
-  email  String   @unique
-  name   String?
-  Recipe Recipe[]
-  List   List[]
+  id       Int      @id @default(autoincrement())
+  email    String   @unique
+  password String
+  name     String?
+  Recipe   Recipe[]
+  List     List[]
   // following User[] @relation("Follow", references: [id])
   // followers User[] @relation("Follow", references: [id])
 }
@@ -33,7 +34,7 @@ model List {
   name        String
   author      User?        @relation(fields: [authorId], references: [id])
   authorId    Int?
-  listRecipes ListRecipe[] 
+  listRecipes ListRecipe[]
 }
 
 model Recipe {
@@ -43,9 +44,9 @@ model Recipe {
   link        String?
   ingredients String[]     @default([])
   steps       String[]     @default([])
-  rating      Int?         // 1-5
+  rating      Int? // 1-5
   category    String?
-  status      String?      // "to try" or "tried"
+  status      String? // "to try" or "tried"
   description String?
   author      User?        @relation(fields: [authorId], references: [id])
   authorId    Int?
@@ -55,7 +56,8 @@ model Recipe {
 model ListRecipe {
   listId   Int
   recipeId Int
-  list     List    @relation(fields: [listId], references: [id])
-  recipe   Recipe  @relation(fields: [recipeId], references: [id])
+  list     List   @relation(fields: [listId], references: [id])
+  recipe   Recipe @relation(fields: [recipeId], references: [id])
+
   @@id([listId, recipeId])
 }
