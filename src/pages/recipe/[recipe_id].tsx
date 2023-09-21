@@ -10,9 +10,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const id = recipe_id ? parseInt(recipe_id as string, 10) : undefined;
 
   const recipes = await prisma.recipe.findMany({
-    include: {
-      author: true,
-    },
+    // include: {
+    //   author: true,
+    // },
     where: {
       id,
     },

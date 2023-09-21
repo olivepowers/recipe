@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "./auth/[...nextauth]";
+import authOptions from "./auth/[...nextauth]";
 
 const restrictedContentHandler = async (req: any, res: any) => {
   const session = await getServerSession(req, res, authOptions);

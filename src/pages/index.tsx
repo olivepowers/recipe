@@ -13,11 +13,12 @@ import { RecipeProps } from "@web/components/Recipe";
 import Recipe from "@web/components/Recipe";
 import Layout from "@web/components/Layout";
 import AddRecipeModal from "@web/components/AddRecipeModal";
+import { useEffect } from "react";
 export const getServerSideProps: GetServerSideProps = async () => {
   const recipes = await prisma.recipe.findMany({
-    include: {
-      author: true,
-    },
+    // include: {
+    //   author: true,
+    // },
   });
   return {
     props: { recipes },

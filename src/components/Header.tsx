@@ -1,8 +1,11 @@
 import React from "react";
 import { Avatar, Button, Flex } from "@radix-ui/themes";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 const Header = () => {
+  const router = useRouter();
+
   return (
     <Flex
       gap="3"
@@ -20,7 +23,9 @@ const Header = () => {
         <Button color="cyan" variant="ghost">
           Recipe Box
         </Button>
-        <Avatar color="cyan" radius="full" fallback="OP" />
+        <div onClick={() => router.push("/profile")}>
+          <Avatar color="cyan" radius="full" fallback="OP" />
+        </div>
       </Flex>
     </Flex>
   );
