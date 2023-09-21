@@ -1,8 +1,26 @@
 // pages/api/recipes/create.js
-import { createRecipe } from "@web/lib/prisma"; // Import your createRecipe function
+import prisma, { createRecipe } from "@web/lib/prisma"; // Import your createRecipe function
+import { authOptions } from "./auth/[...nextauth]";
+import { getServerSession } from "next-auth";
 
 export default async function handler(req: any, res: any) {
-  console.log({ req });
+  const session = await getServerSession(req, res, authOptions);
+
+  if (session === null || !session?.user?.email) {
+    // TODO: handle error
+    res.send();
+    return;
+  }
+  console.log("hola");
+  console.log({ session, req });
+
+  const user = await prisma.user.findUnique({
+    where: {
+      email: session.user.email,
+    },
+  });
+  const userId = user?.id;
+
   try {
     if (req.method === "POST") {
       const {
@@ -18,17 +36,20 @@ export default async function handler(req: any, res: any) {
       } = req.body;
 
       // Perform data validation and create the recipe using Prisma
-      const newRecipe = await createRecipe({
-        title,
-        picture,
-        link,
-        ingredients,
-        steps,
-        rating,
-        category,
-        status,
-        description,
-      });
+      const newRecipe = await createRecipe(
+        {
+          title,
+          picture,
+          link,
+          ingredients,
+          steps,
+          rating,
+          category,
+          status,
+          description,
+        },
+        userId
+      );
 
       return res.status(201).json({ recipe: newRecipe });
     } else {

@@ -11,8 +11,10 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import { createRecipe } from "@web/lib/prisma";
+import { useSession } from "next-auth/react";
 
 const AddRecipeModal = () => {
+  const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState({
     title: "",
     picture: "",
@@ -43,7 +45,6 @@ const AddRecipeModal = () => {
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    console.log({ name, value });
     setRecipeData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -83,14 +84,17 @@ const AddRecipeModal = () => {
   //     }
   //   };
 
-  const handleSave = async () => {
+  const handleSave = async (session: any) => {
     try {
       const response = await fetch("/api/recipe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(recipeData),
+        body: JSON.stringify({
+          ...recipeData,
+          authorId: session?.user?.id,
+        }),
       });
 
       if (response.ok) {
@@ -101,6 +105,14 @@ const AddRecipeModal = () => {
       }
     } catch (error) {
       console.error("Error saving recipe:", error);
+    }
+  };
+
+  const handleSaveClick = () => {
+    if (session) {
+      handleSave(session);
+    } else {
+      // add later, return to sign in page maybe?
     }
   };
 
@@ -204,7 +216,7 @@ const AddRecipeModal = () => {
               </Button>
             </Dialog.Close>
             <Dialog.Close>
-              <Button onClick={handleSave}>Save</Button>
+              <Button onClick={handleSaveClick}>Save</Button>
             </Dialog.Close>
           </Flex>
         </Dialog.Content>

@@ -6,29 +6,31 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 const prisma = new PrismaClient();
 
-export default NextAuth({
+export const authOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
     }),
-    CredentialsProvider({
-      id: "credentials",
-      name: "credentials",
-      credentials: {
-        username: { label: "Name", type: "text", placeholder: "jsmith" },
-      },
-      async authorize(credentials) {
-        const user = await prisma.user.findFirst({
-          where: {
-            name: credentials?.username,
-          },
-        });
-        console.log({ user, credentials });
-        return user;
-      },
-    }),
+    // CredentialsProvider({
+    //   id: "credentials",
+    //   name: "credentials",
+    //   credentials: {
+    //     username: { label: "Name", type: "text", placeholder: "jsmith" },
+    //   },
+    //   async authorize(credentials) {
+    //     const user = await prisma.user.findFirst({
+    //       where: {
+    //         name: credentials?.username,
+    //       },
+    //     });
+    //     console.log({ user, credentials });
+    //     return user;x
+    //   },
+    // }),
   ],
   adapter: PrismaAdapter(prisma),
-  secret: "olivia",
-});
+  // secret: "olivia",
+};
+
+export default NextAuth(authOptions);
