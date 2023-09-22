@@ -7,18 +7,18 @@ export default async function handler(req: any, res: any) {
   const session = await getServerSession(req, res, authOptions);
 
   if (session === null || !session?.user?.email) {
-    // TODO: handle error
-    res.send();
-    return;
+    return res.status(401).json({ error: "You must be logged in. " });
   }
-  console.log("hola");
-  console.log({ session, req });
 
   const user = await prisma.user.findUnique({
     where: {
       email: session.user.email,
     },
   });
+
+  if (!user) {
+    return res.status(404).json({ error: "User not found." });
+  }
   const userId = user?.id;
 
   try {
