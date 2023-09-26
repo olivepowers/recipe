@@ -66,7 +66,6 @@ const RecipeForm = ({
   //   };
 
   const handleSubmit = (e: any) => {
-    e.preventDefault();
     if (session) {
       onSubmit(session, recipeData);
     } else {
