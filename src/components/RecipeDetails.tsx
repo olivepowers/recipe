@@ -1,14 +1,21 @@
 import React from "react";
 import { RecipeProps } from "./Recipe";
 import { Box, Card, Flex, Grid, Heading, Text } from "@radix-ui/themes";
+import { useSession } from "next-auth/react";
+import EditRecipeModal from "./EditRecipeModal";
 
 type Props = {
   recipe: RecipeProps;
 };
 
 const RecipeDetails: React.FC<Props> = ({ recipe }) => {
+  const { data: session } = useSession();
+  // TODO: verify author off id not email
+  const isAuthor = session?.user?.email === recipe.author?.email;
+
   return (
     <Card>
+      {isAuthor && <EditRecipeModal initialRecipeData={recipe} />}
       <Flex gap="3" align="start" direction="column">
         <Flex gap="3" direction="row">
           <Box>

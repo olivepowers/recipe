@@ -17,4 +17,12 @@ export async function createRecipe(recipeData: any, userId: string) {
   return newRecipe;
 }
 
+export async function updateRecipe(recipeId: number, updatedData: any) {
+  const updatedRecipe = await prisma.recipe.update({
+    where: { id: recipeId },
+    data: updatedData,
+  });
+  return updateRecipe;
+}
+
 export default prisma;
