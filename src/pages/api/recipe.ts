@@ -1,5 +1,5 @@
-// pages/api/recipes/create.js
-import prisma, { createRecipe } from "@web/lib/prisma"; // Import your createRecipe function
+// pages/api/recipe
+import prisma, { createRecipe, updateRecipe } from "@web/lib/prisma"; // Import your createRecipe function
 import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 
@@ -52,11 +52,63 @@ export default async function handler(req: any, res: any) {
       );
 
       return res.status(201).json({ recipe: newRecipe });
+    } else if (req.method == "PATCH") {
+      const { recipeData } = req.body;
+      console.log("recipeData:", recipeData);
+      const recipeId = recipeData.id;
+      console.log("recipeId:", recipeId);
+
+      if (!recipeId) {
+        return res
+          .status(400)
+          .json({ error: "Recipe ID is required for updating." });
+      }
+
+      const existingRecipe = await prisma.recipe.findUnique({
+        where: {
+          id: recipeId,
+        },
+      });
+
+      if (!existingRecipe) {
+        return res.status(404).json({ error: "Recipe not found." });
+      }
+
+      if (existingRecipe.authorId !== userId) {
+        return res
+          .status(403)
+          .json({ error: "You are not authorized to update this recipe." });
+      }
+
+      const updateData: any = {
+        title: recipeData.title,
+        picture: recipeData.picture,
+        link: recipeData.picture,
+        ingredients: recipeData.ingredients,
+        steps: recipeData.steps,
+        rating: recipeData.rating,
+        category: recipeData.category,
+        status: recipeData.status,
+        description: recipeData.description,
+      };
+
+      const filteredUpdateData = Object.keys(updateData).reduce(
+        (acc: any, key) => {
+          if (updateData[key] !== undefined) {
+            acc[key] = updateData[key];
+          }
+          return acc;
+        },
+        {}
+      );
+
+      const updatedRecipe = await updateRecipe(recipeId, filteredUpdateData);
+      return res.status(200).json({ recipe: updatedRecipe });
     } else {
       return res.status(405).json({ error: "Method not allowed" });
     }
   } catch (error) {
-    console.error("Error creating recipe:", error);
+    console.error("Error with recipe:", error);
     return res.status(500).json({ error: "Internal server error" });
   }
 }
