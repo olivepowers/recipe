@@ -1,6 +1,10 @@
 // pages/api/recipe
 import { Recipe } from "@prisma/client";
-import prisma, { createRecipe, updateRecipe } from "@web/lib/prisma"; // Import your createRecipe function
+import prisma, {
+  createRecipe,
+  updateRecipe,
+  deleteRecipe,
+} from "@web/lib/prisma"; // Import your createRecipe function
 import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -113,6 +117,36 @@ export default async function handler(
 
       const updatedRecipe = await updateRecipe(recipeId, filteredUpdateData);
       return res.status(200).json({ recipe: updatedRecipe });
+    } else if (req.method === "DELETE") {
+      const { recipeData } = req.body;
+      console.log("recipeData:", recipeData);
+      const recipeId = recipeData.id;
+      console.log("recipeId:", recipeId);
+
+      if (!recipeId) {
+        return res
+          .status(400)
+          .json({ error: "Recipe ID is required for updating." });
+      }
+
+      const existingRecipe = await prisma.recipe.findUnique({
+        where: {
+          id: recipeId,
+        },
+      });
+
+      if (!existingRecipe) {
+        return res.status(404).json({ error: "Recipe not found." });
+      }
+
+      if (existingRecipe.authorId !== userId) {
+        return res
+          .status(403)
+          .json({ error: "You are not authorized to delete this recipe." });
+      }
+
+      const deletedRecipe = await deleteRecipe(recipeId);
+      return res.status(200).json({ recipe: deletedRecipe });
     } else {
       return res.status(405).json({ error: "Method not allowed" });
     }

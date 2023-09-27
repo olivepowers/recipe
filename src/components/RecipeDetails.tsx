@@ -3,6 +3,7 @@ import { Box, Card, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import EditRecipeModal from "./EditRecipeModal";
 import { Recipe } from "@prisma/client";
+import DeleteRecipe from "./DeleteRecipe";
 
 type Props = {
   recipe: Recipe;
@@ -17,6 +18,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
   return (
     <Card>
       {isAuthor && <EditRecipeModal initialRecipeData={recipe} />}
+      {isAuthor && <DeleteRecipe recipeData={recipe} />}
       <Flex gap="3" align="start" direction="column">
         <Flex gap="3" direction="row">
           <Box>

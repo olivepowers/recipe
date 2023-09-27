@@ -20,7 +20,14 @@ export async function updateRecipe(recipeId: number, updatedData: any) {
     where: { id: recipeId },
     data: updatedData,
   });
-  return updateRecipe;
+  return updatedRecipe;
+}
+
+export async function deleteRecipe(recipeId: number) {
+  const deletedRecipe = await prisma.recipe.delete({
+    where: { id: recipeId },
+  });
+  return deletedRecipe;
 }
 
 export default prisma;

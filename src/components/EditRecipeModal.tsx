@@ -28,7 +28,7 @@ const EditRecipeModal = ({
         const errorData = await response.json();
         console.error("Error updating recipe:", errorData);
         throw new Error(
-          errorData.error || "Any error occured while updating the recipe."
+          errorData.error || "An error occured while updating the recipe."
         );
       }
     } catch (error) {
