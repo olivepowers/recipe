@@ -1,14 +1,18 @@
 import { Flex } from "@radix-ui/themes";
 import type { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 import prisma from "../lib/prisma";
 import RecipeComponent from "@web/components/RecipeComponent";
 import Layout from "@web/components/Layout";
 import AddRecipeModal from "@web/components/AddRecipeModal";
 import { Recipe } from "@prisma/client";
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const session = await getSession(context); // Get the session data
   const recipes = await prisma.recipe.findMany({
-    include: {
-      author: true,
+    where: {
+      author: {
+        email: session?.user?.email || null,
+      },
     },
   });
   return {
@@ -20,7 +24,7 @@ type Props = {
   recipes: Recipe[];
 };
 
-export default function Home(props: Props) {
+export default function myrecipes(props: Props) {
   console.log({ props });
 
   return (
