@@ -1,7 +1,11 @@
 import { getServerSession } from "next-auth/next";
 import authOptions from "./auth/[...nextauth]";
+import { NextApiRequest, NextApiResponse } from "next";
 
-const restrictedContentHandler = async (req: any, res: any) => {
+const restrictedContentHandler = async (
+  req: NextApiRequest,
+  res: NextApiResponse
+) => {
   const session = await getServerSession(req, res, authOptions);
 
   if (session) {

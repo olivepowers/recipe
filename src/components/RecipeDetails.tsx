@@ -1,16 +1,17 @@
 import React from "react";
-import { RecipeProps } from "./Recipe";
 import { Box, Card, Flex, Grid, Heading, Text } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import EditRecipeModal from "./EditRecipeModal";
+import { Recipe } from "@prisma/client";
 
 type Props = {
-  recipe: RecipeProps;
+  recipe: Recipe;
 };
 
 const RecipeDetails: React.FC<Props> = ({ recipe }) => {
   const { data: session } = useSession();
   // TODO: verify author off id not email
+  // @ts-expect-error change recipeprops to include author
   const isAuthor = session?.user?.email === recipe.author?.email;
 
   return (
@@ -28,6 +29,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
           <Flex direction="column">
             <Heading size="7">{recipe.title}</Heading>
             <Text weight="light">
+              {/* @ts-expect-error make the author defined in getServerSideProps */}
               {recipe.author?.name ? recipe.author.name : "No author"}
             </Text>
           </Flex>

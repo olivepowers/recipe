@@ -1,9 +1,14 @@
 // pages/api/recipe
+import { Recipe } from "@prisma/client";
 import prisma, { createRecipe, updateRecipe } from "@web/lib/prisma"; // Import your createRecipe function
 import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
+import { NextApiRequest, NextApiResponse } from "next";
 
-export default async function handler(req: any, res: any) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   const session = await getServerSession(req, res, authOptions);
 
   if (session === null || !session?.user?.email) {
@@ -47,7 +52,7 @@ export default async function handler(req: any, res: any) {
           category,
           status,
           description,
-        },
+        } as Recipe,
         userId
       );
 
@@ -80,7 +85,8 @@ export default async function handler(req: any, res: any) {
           .json({ error: "You are not authorized to update this recipe." });
       }
 
-      const updateData: any = {
+      // @ts-expect-error
+      const updateData: Recipe = {
         title: recipeData.title,
         picture: recipeData.picture,
         link: recipeData.picture,
@@ -92,9 +98,12 @@ export default async function handler(req: any, res: any) {
         description: recipeData.description,
       };
 
+      // TODO: reduce is clunky here
       const filteredUpdateData = Object.keys(updateData).reduce(
         (acc: any, key) => {
+          // @ts-expect-error
           if (updateData[key] !== undefined) {
+            // @ts-expect-error
             acc[key] = updateData[key];
           }
           return acc;

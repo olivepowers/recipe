@@ -1,11 +1,17 @@
 import React from "react";
 import { useSession } from "next-auth/react";
 import RecipeForm from "./RecipeForm";
+import { Recipe } from "@prisma/client";
+import { Session } from "next-auth";
 
-const EditRecipeModal = ({ initialRecipeData }) => {
+const EditRecipeModal = ({
+  initialRecipeData,
+}: {
+  initialRecipeData: Recipe;
+}) => {
   const { data: session } = useSession();
 
-  const handleUpdate = async (session: any, data: any) => {
+  const handleUpdate = async (session: Session, data: Recipe) => {
     try {
       const response = await fetch("/api/recipe", {
         method: "PATCH",

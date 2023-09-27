@@ -9,11 +9,11 @@ import {
 } from "@radix-ui/themes";
 import type { GetServerSideProps } from "next";
 import prisma from "../lib/prisma";
-import { RecipeProps } from "@web/components/Recipe";
-import Recipe from "@web/components/Recipe";
+import RecipeComponent from "@web/components/Recipe";
 import Layout from "@web/components/Layout";
 import AddRecipeModal from "@web/components/AddRecipeModal";
 import { useEffect } from "react";
+import { Recipe } from "@prisma/client";
 export const getServerSideProps: GetServerSideProps = async () => {
   const recipes = await prisma.recipe.findMany({
     // include: {
@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 };
 
 type Props = {
-  recipes: RecipeProps[];
+  recipes: Recipe[];
 };
 
 export default function Home(props: Props) {
@@ -38,7 +38,7 @@ export default function Home(props: Props) {
       <Flex className="min-h-screen p-5 flex-col">
         <Flex direction="column" gap="5">
           {props.recipes.map((recipe, index) => (
-            <Recipe key={index} recipe={recipe} />
+            <RecipeComponent key={index} recipe={recipe} />
           ))}
         </Flex>
       </Flex>

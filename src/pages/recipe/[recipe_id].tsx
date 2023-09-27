@@ -1,5 +1,5 @@
+import { Recipe } from "@prisma/client";
 import Layout from "@web/components/Layout";
-import { RecipeProps } from "@web/components/Recipe";
 import RecipeDetails from "@web/components/RecipeDetails";
 import prisma from "@web/lib/prisma";
 import { GetServerSideProps } from "next";
@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 };
 
 type Props = {
-  recipe: RecipeProps;
+  recipe: Recipe;
 };
 
 // get :recipe_id from route

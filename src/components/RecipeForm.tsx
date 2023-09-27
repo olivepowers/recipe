@@ -11,15 +11,24 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
+import { Recipe } from "@prisma/client";
+import { Session } from "next-auth";
+
+type RecipeProps = {
+  initialData: Recipe;
+  onSubmit: (session: Session, recipe: Recipe) => void;
+  buttonText: string;
+  modalDescription: string;
+};
 
 const RecipeForm = ({
   initialData,
   onSubmit,
   buttonText,
   modalDescription,
-}) => {
+}: RecipeProps) => {
   const { data: session } = useSession();
-  const [recipeData, setRecipeData] = useState(initialData);
+  const [recipeData, setRecipeData] = useState<Recipe>(initialData);
 
   const resetRecipeData = () => {
     setRecipeData(initialData);
@@ -27,14 +36,14 @@ const RecipeForm = ({
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setRecipeData((prevData: any) => ({
+    setRecipeData((prevData: Recipe) => ({
       ...prevData,
       [name]: value,
     }));
   };
 
   const handleCategoryChange = (value: string) => {
-    setRecipeData((prevData: any) => ({
+    setRecipeData((prevData: Recipe) => ({
       ...prevData,
       category: value,
     }));
@@ -44,16 +53,16 @@ const RecipeForm = ({
     console.log({ recipeData });
   }, [recipeData]);
 
-  const handleChangeStatus = (e: any) => {
+  const handleChangeStatus = (e: boolean) => {
     let nextStatus = "havemade";
     if (e === false) {
       nextStatus = "wanttomake";
     }
-    setRecipeData((prev: any) => ({ ...prev, status: nextStatus }));
+    setRecipeData((prev: Recipe) => ({ ...prev, status: nextStatus }));
   };
 
   const handleRatingChange = (newValue: number) => {
-    setRecipeData((prevData: any) => ({ ...prevData, rating: newValue }));
+    setRecipeData((prevData: Recipe) => ({ ...prevData, rating: newValue }));
   };
 
   //   const handleSave = async () => {
@@ -91,13 +100,13 @@ const RecipeForm = ({
             />
             <TextField.Input
               name="picture"
-              value={recipeData.picture}
+              value={recipeData?.picture ?? "Default Image URL TODO"}
               onChange={handleInputChange}
               placeholder="Insert a picture"
             />
             <TextField.Input
               name="link"
-              value={recipeData.link}
+              value={recipeData?.link ?? ""}
               onChange={handleInputChange}
               placeholder="Link to recipe if applicable"
             />
@@ -118,7 +127,7 @@ const RecipeForm = ({
                 Rating
               </Text>
               <Slider
-                defaultValue={[recipeData.rating]}
+                defaultValue={[recipeData?.rating ?? 0]}
                 onValueChange={(newValues) => {
                   handleRatingChange(newValues[0]);
                 }}
@@ -126,12 +135,12 @@ const RecipeForm = ({
             </label>
             <Select.Root
               name="category"
-              value={recipeData.category}
+              value={recipeData?.category ?? ""}
               onValueChange={handleCategoryChange}
             >
               <Select.Trigger
                 name="category"
-                value={recipeData.category}
+                value={recipeData?.category ?? ""}
                 placeholder="Select a category..."
               />
               <Select.Content>
@@ -159,7 +168,7 @@ const RecipeForm = ({
             </Flex>
             <TextArea
               name="description"
-              value={recipeData.description}
+              value={recipeData?.description ?? ""}
               onChange={handleInputChange}
               placeholder="Description or notes"
             />

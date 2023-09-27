@@ -1,8 +1,8 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import Header from "./Header";
 import { Flex } from "@radix-ui/themes";
 
-const Layout = ({ children }: any) => {
+const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <Flex direction="column">
       <Header />

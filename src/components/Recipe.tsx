@@ -9,26 +9,9 @@ import {
   Heading,
   Text,
 } from "@radix-ui/themes";
+import { Recipe } from "@prisma/client";
 
-export type RecipeProps = {
-  id: number;
-  title: string;
-  picture: string;
-  link: string;
-  ingredients: [];
-  steps: [];
-  rating: number;
-  category: string;
-  status: string;
-  description: string;
-  author: {
-    id: number;
-    name: string;
-    email: string;
-  } | null;
-};
-
-const Recipe: React.FC<{ recipe: RecipeProps }> = ({ recipe }) => {
+const RecipeComponent: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const router = useRouter();
 
   const handleClick = () => {
@@ -43,7 +26,8 @@ const Recipe: React.FC<{ recipe: RecipeProps }> = ({ recipe }) => {
             {recipe.title}
           </Text>
           <Text as="div" size="2" color="gray">
-            {recipe.author?.name}
+            {/* @ts-expect-error RecipeProps should include author object */}
+            {recipe?.author?.name}
           </Text>
           <Text as="div" size="3">
             {recipe.description}
@@ -54,4 +38,4 @@ const Recipe: React.FC<{ recipe: RecipeProps }> = ({ recipe }) => {
   );
 };
 
-export default Recipe;
+export default RecipeComponent;

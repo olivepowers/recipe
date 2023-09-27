@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { createRecipe } from "@web/lib/prisma";
+import React from "react";
 import { useSession } from "next-auth/react";
 import RecipeForm from "./RecipeForm";
+import { Recipe } from "@prisma/client";
+import { Session } from "next-auth";
 
 const AddRecipeModal = () => {
   const { data: session } = useSession();
 
+  // @ts-expect-error
   const initialRecipeData = {
     title: "",
     picture: "",
@@ -16,9 +18,9 @@ const AddRecipeModal = () => {
     category: "",
     status: "havemade", // havemade or wanttomake
     description: "",
-  };
+  } as Recipe;
 
-  const handleSave = async (session: any, data: any) => {
+  const handleSave = async (session: Session, data: Recipe) => {
     console.log({ data });
     try {
       const response = await fetch("/api/recipe", {
@@ -28,6 +30,7 @@ const AddRecipeModal = () => {
         },
         body: JSON.stringify({
           ...data,
+          // @ts-expect-error ID is actually on session but not on type
           authorId: session?.user?.id,
         }),
       });
