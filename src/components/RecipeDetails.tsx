@@ -104,7 +104,11 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
           </Grid>
         </Flex>
       </Card>
-      {isEditModalOpen && <EditRecipeModal initialRecipeData={recipe} />}
+      <EditRecipeModal
+        isOpen={isEditModalOpen}
+        setIsOpen={setIsEditModalOpen}
+        initialRecipeData={recipe}
+      />
     </Flex>
   );
 };

@@ -19,7 +19,8 @@ type RecipeProps = {
   onSubmit: (session: Session, recipe: Recipe) => void;
   buttonText: string;
   modalDescription: string;
-  triggerElem?: React.ReactNode;
+  isOpen: boolean;
+  setIsOpen: (newIsOpen: boolean) => void;
 };
 
 const RecipeForm = ({
@@ -27,13 +28,15 @@ const RecipeForm = ({
   onSubmit,
   buttonText,
   modalDescription,
-  triggerElem,
+  isOpen,
+  setIsOpen,
 }: RecipeProps) => {
   const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState<Recipe>(initialData);
 
   const resetRecipeData = () => {
     setRecipeData(initialData);
+    setIsOpen(false);
   };
 
   const handleInputChange = (e: any) => {
@@ -79,17 +82,16 @@ const RecipeForm = ({
   const handleSubmit = (e: any) => {
     if (session) {
       onSubmit(session, recipeData);
+      setIsOpen(false);
     } else {
       //TODO: add later, return to sign in page maybe?
+      alert("Invalid auth");
     }
   };
 
   return (
     <Flex justify="end">
-      <Dialog.Root>
-        <Dialog.Trigger>
-          <Button>{buttonText}</Button>
-        </Dialog.Trigger>
+      <Dialog.Root open={isOpen}>
         <Dialog.Content style={{ maxWidth: 500 }}>
           <Dialog.Title>{buttonText}</Dialog.Title>
           <Dialog.Description>{modalDescription}</Dialog.Description>

@@ -7,8 +7,12 @@ import { DropdownMenu } from "@radix-ui/themes";
 
 const EditRecipeModal = ({
   initialRecipeData,
+  isOpen,
+  setIsOpen,
 }: {
   initialRecipeData: Recipe;
+  isOpen: boolean;
+  setIsOpen: (newIsOpen: boolean) => void;
 }) => {
   const { data: session } = useSession();
 
@@ -45,7 +49,8 @@ const EditRecipeModal = ({
       onSubmit={handleUpdate}
       buttonText="Edit Recipe"
       modalDescription="Edit Recipe"
-      triggerElem={triggerElem}
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
     />
   );
 };
