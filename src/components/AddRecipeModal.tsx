@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import RecipeForm from "./RecipeForm";
 import { Recipe } from "@prisma/client";
 import { Session } from "next-auth";
+import { Button } from "@radix-ui/themes";
 
 const AddRecipeModal = () => {
   const { data: session } = useSession();
@@ -46,12 +47,15 @@ const AddRecipeModal = () => {
     }
   };
 
+  const triggerElem = <Button>Add Recipe</Button>;
+
   return (
     <RecipeForm
       initialData={initialRecipeData}
       onSubmit={handleSave}
       buttonText="Add Recipe"
       modalDescription="Add Recipe"
+      triggerElem={triggerElem}
     />
   );
 };

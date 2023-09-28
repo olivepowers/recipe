@@ -19,6 +19,7 @@ type RecipeProps = {
   onSubmit: (session: Session, recipe: Recipe) => void;
   buttonText: string;
   modalDescription: string;
+  triggerElem?: React.ReactNode;
 };
 
 const RecipeForm = ({
@@ -26,6 +27,7 @@ const RecipeForm = ({
   onSubmit,
   buttonText,
   modalDescription,
+  triggerElem,
 }: RecipeProps) => {
   const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState<Recipe>(initialData);

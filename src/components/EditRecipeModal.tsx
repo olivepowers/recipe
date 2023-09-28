@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import RecipeForm from "./RecipeForm";
 import { Recipe } from "@prisma/client";
 import { Session } from "next-auth";
+import { DropdownMenu } from "@radix-ui/themes";
 
 const EditRecipeModal = ({
   initialRecipeData,
@@ -35,12 +36,16 @@ const EditRecipeModal = ({
       console.error("Error updating recipe:", error);
     }
   };
+
+  const triggerElem = <DropdownMenu.Item>Edit</DropdownMenu.Item>;
+
   return (
     <RecipeForm
       initialData={initialRecipeData}
       onSubmit={handleUpdate}
       buttonText="Edit Recipe"
       modalDescription="Edit Recipe"
+      triggerElem={triggerElem}
     />
   );
 };
