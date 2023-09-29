@@ -3,8 +3,15 @@ import { useSession } from "next-auth/react";
 import RecipeForm from "./RecipeForm";
 import { Recipe } from "@prisma/client";
 import { Session } from "next-auth";
+import { Button } from "@radix-ui/themes";
 
-const AddRecipeModal = () => {
+const AddRecipeModal = ({
+  isOpen,
+  setIsOpen,
+}: {
+  isOpen: boolean;
+  setIsOpen: (val: boolean) => void;
+}) => {
   const { data: session } = useSession();
 
   // @ts-expect-error
@@ -52,6 +59,8 @@ const AddRecipeModal = () => {
       onSubmit={handleSave}
       buttonText="Add Recipe"
       modalDescription="Add Recipe"
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
     />
   );
 };
