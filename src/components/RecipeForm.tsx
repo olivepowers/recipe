@@ -21,7 +21,13 @@ type RecipeProps = {
   modalDescription: string;
   isOpen: boolean;
   setIsOpen: (newIsOpen: boolean) => void;
+  type?: ModalType;
 };
+
+enum ModalType {
+  Add = "Add",
+  Edit = "Edit",
+}
 
 const RecipeForm = ({
   initialData,
@@ -30,6 +36,7 @@ const RecipeForm = ({
   modalDescription,
   isOpen,
   setIsOpen,
+  type,
 }: RecipeProps) => {
   const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState<Recipe>(initialData);
