@@ -82,6 +82,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
                 {/* @ts-expect-error make the author defined in getServerSideProps */}
                 {recipe.author?.name ? recipe.author.name : "No author"}
               </Text>
+              <Text>{recipe.description}</Text>
             </Flex>
           </Flex>
           <Grid columns="2" gap="4">
