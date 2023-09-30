@@ -6,7 +6,6 @@ import RecipeComponent from "@web/components/RecipeComponent";
 import Layout from "@web/components/Layout";
 import AddRecipeModal from "@web/components/AddRecipeModal";
 import { Recipe } from "@prisma/client";
-import RecipeFilter from "@web/components/RecipeFilter";
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const session = await getSession(context); // Get the session data
   const recipes = await prisma.recipe.findMany({
@@ -30,7 +29,6 @@ export default function myrecipes(props: Props) {
 
   return (
     <Layout>
-      <RecipeFilter />
       <AddRecipeModal />
       <Flex className="min-h-screen p-5 flex-col">
         <Flex direction="column" gap="5">
