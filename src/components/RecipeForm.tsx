@@ -40,6 +40,7 @@ const RecipeForm = ({
 }: RecipeProps) => {
   const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState<Recipe>(initialData);
+  const [ingredientInput, setIngredientInput] = useState<string>("");
 
   const resetRecipeData = () => {
     setRecipeData(initialData);
@@ -75,6 +76,32 @@ const RecipeForm = ({
 
   const handleRatingChange = (newValue: number) => {
     setRecipeData((prevData: Recipe) => ({ ...prevData, rating: newValue }));
+  };
+
+  // TODO: make generic to handle change for steps and hashtags
+  const handleIngredientInputChange = (e: any) => {
+    setIngredientInput(e.target.value);
+  };
+
+  const handleAddIngredient = () => {
+    if (ingredientInput.trim() !== "") {
+      setRecipeData((prevData: Recipe) => ({
+        ...prevData,
+        ingredients: [...prevData.ingredients, ingredientInput],
+      }));
+
+      setIngredientInput("");
+    }
+  };
+
+  const handleDeleteIngredient = (indexToDelete: number) => {
+    const updatedIngredients = recipeData.ingredients.filter(
+      (_, index) => index !== indexToDelete
+    );
+    setRecipeData((prevData: Recipe) => ({
+      ...prevData,
+      ingredients: updatedIngredients,
+    }));
   };
 
   //   const handleSave = async () => {
@@ -121,12 +148,28 @@ const RecipeForm = ({
               onChange={handleInputChange}
               placeholder="Link to recipe if applicable"
             />
-            {/* <TextArea
-            //   name="ingredients"
-            //   value={recipeData.ingredients}
-            //   onChange={handleInputChange}
-              placeholder="List of ingredients"
-            /> */}
+            <label>
+              <Text as="div" size="2" mb="1" weight="bold">
+                Ingredients
+              </Text>
+            </label>
+            <TextArea
+              name="ingredients"
+              value={ingredientInput}
+              onChange={handleIngredientInputChange}
+              placeholder="Enter an ingredient"
+            />
+            <Button onClick={handleAddIngredient}>Add</Button>
+            <ul>
+              {recipeData.ingredients.map((ingredient, index) => (
+                <li key={index}>
+                  {ingredient}{" "}
+                  <Button onClick={() => handleDeleteIngredient(index)}>
+                    Delete
+                  </Button>
+                </li>
+              ))}
+            </ul>
             {/* <TextArea
               name="steps"
               value={recipeData.steps}
