@@ -36,7 +36,7 @@ const userData: Prisma.UserCreateInput[] = [
           ingredients: ["flour", "butter"],
           steps: ["mix", "bake"],
           rating: 4.5,
-          category: "Dessert",
+          hashtags: ["dessert", "cookies"],
           status: "made",
         },
         {
@@ -47,7 +47,7 @@ const userData: Prisma.UserCreateInput[] = [
           ingredients: ["flour", "butter"],
           steps: ["mix", "bake"],
           rating: 4.5,
-          category: "Dessert",
+          hashtags: ["italian"],
           status: "made",
         },
       ],

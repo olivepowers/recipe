@@ -22,7 +22,7 @@ const AddRecipeModal = ({
     ingredients: [],
     steps: [],
     rating: 0,
-    category: "",
+    hashtags: [],
     status: "havemade", // havemade or wanttomake
     description: "",
   } as Recipe;

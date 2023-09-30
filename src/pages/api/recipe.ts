@@ -32,33 +32,10 @@ export default async function handler(
 
   try {
     if (req.method === "POST") {
-      const {
-        title,
-        picture,
-        link,
-        ingredients,
-        steps,
-        rating,
-        category,
-        status,
-        description,
-      } = req.body;
+      const recipe = req.body;
 
       // Perform data validation and create the recipe using Prisma
-      const newRecipe = await createRecipe(
-        {
-          title,
-          picture,
-          link,
-          ingredients,
-          steps,
-          rating,
-          category,
-          status,
-          description,
-        } as Recipe,
-        userId
-      );
+      const newRecipe = await createRecipe(recipe as Recipe, userId);
 
       return res.status(201).json({ recipe: newRecipe });
     } else if (req.method == "PATCH") {
@@ -89,18 +66,7 @@ export default async function handler(
           .json({ error: "You are not authorized to update this recipe." });
       }
 
-      // @ts-expect-error
-      const updateData: Recipe = {
-        title: recipeData.title,
-        picture: recipeData.picture,
-        link: recipeData.picture,
-        ingredients: recipeData.ingredients,
-        steps: recipeData.steps,
-        rating: recipeData.rating,
-        category: recipeData.category,
-        status: recipeData.status,
-        description: recipeData.description,
-      };
+      const updateData = recipeData as Recipe;
 
       // TODO: reduce is clunky here
       const filteredUpdateData = Object.keys(updateData).reduce(

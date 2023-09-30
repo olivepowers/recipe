@@ -58,7 +58,7 @@ model User {
 
   // Our fields
   Recipe Recipe[]
-  List   List[]
+  lists  List[]
 }
 
 model List {
@@ -77,12 +77,12 @@ model Recipe {
   ingredients String[]     @default([])
   steps       String[]     @default([])
   rating      Int? // 1-5
-  category    String?
   status      String? // "to try" or "tried"
   description String?
   author      User?        @relation(fields: [authorId], references: [id])
   authorId    String?
   lists       ListRecipe[]
+  hashtags    String[]
 }
 
 model ListRecipe {

@@ -54,12 +54,12 @@ const RecipeForm = ({
     }));
   };
 
-  const handleCategoryChange = (value: string) => {
-    setRecipeData((prevData: Recipe) => ({
-      ...prevData,
-      category: value,
-    }));
-  };
+  // const handleCategoryChange = (value: string) => {
+  //   setRecipeData((prevData: Recipe) => ({
+  //     ...prevData,
+  //     category: value,
+  //   }));
+  // };
 
   useEffect(() => {
     console.log({ recipeData });
@@ -144,14 +144,14 @@ const RecipeForm = ({
                 }}
               />
             </label>
-            <Select.Root
+            {/* <Select.Root
               name="category"
-              value={recipeData?.category ?? ""}
+              value={recipeData?.hashtags ?? []}
               onValueChange={handleCategoryChange}
             >
               <Select.Trigger
                 name="category"
-                value={recipeData?.category ?? ""}
+                value={recipeData?.hashtags ?? []}
                 placeholder="Select a category..."
               />
               <Select.Content>
@@ -162,7 +162,7 @@ const RecipeForm = ({
                   <Select.Item value="appetizer">Snack</Select.Item>
                 </Select.Group>
               </Select.Content>
-            </Select.Root>
+            </Select.Root> */}
             <Flex>
               <Text size="2">
                 <label>
