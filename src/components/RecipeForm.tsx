@@ -128,13 +128,13 @@ const RecipeForm = ({
               placeholder="Link to recipe if applicable"
             />
             <ListManager
-              name="ingredients"
+              name="Ingredients"
               value={recipeData.ingredients}
               onUpdateList={handleUpdateIngredients}
               inputPlaceholder="Enter an ingredient"
             />
             <ListManager
-              name="steps"
+              name="Steps"
               value={recipeData.steps}
               onUpdateList={handleUpdateSteps}
               inputPlaceholder="Enter a step"

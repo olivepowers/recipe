@@ -13,7 +13,6 @@ import {
 import { useSession } from "next-auth/react";
 import EditRecipeModal from "./EditRecipeModal";
 import { Recipe } from "@prisma/client";
-import DeleteRecipe from "./DeleteRecipe";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 
 type Props = {

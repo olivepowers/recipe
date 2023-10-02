@@ -48,7 +48,9 @@ export default function Home(props: Props) {
       <div className="flex">
         <Sidebar />
         <div className="flex-1 p-5">
-          <Button onClick={() => setIsAddModalOpen(true)}>Add Recipe</Button>
+          <Flex justify="end" p="2">
+            <Button onClick={() => setIsAddModalOpen(true)}>Add Recipe</Button>
+          </Flex>
           <Flex direction="column" gap="5">
             {props.recipes.map((recipe, index) => (
               <RecipeComponent key={index} recipe={recipe} />
