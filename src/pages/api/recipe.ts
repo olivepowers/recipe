@@ -42,6 +42,10 @@ export default async function handler(
       const { recipeData } = req.body;
       console.log("recipeData:", recipeData);
       const recipeId = recipeData.id;
+      recipeData.id = undefined;
+      recipeData.authorId = undefined;
+      recipeData.author = undefined;
+
       console.log("recipeId:", recipeId);
 
       if (!recipeId) {
