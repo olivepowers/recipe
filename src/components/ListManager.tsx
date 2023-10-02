@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { Button, TextArea, Flex, Text } from "@radix-ui/themes";
+import { Button, TextField, Flex, Text } from "@radix-ui/themes";
 
 type ListManagerProps = {
   name: string;
   value: string[];
-  //   onAddItem: (item: string) => void;
-  //   onDeleteItem: (index: number) => void;
   onUpdateList: (updatedList: string[]) => void;
   inputPlaceholder: string;
 };
@@ -13,8 +11,6 @@ type ListManagerProps = {
 const ListManager = ({
   name,
   value,
-  //   onAddItem,
-  //   onDeleteItem,
   onUpdateList,
   inputPlaceholder,
 }: ListManagerProps) => {
@@ -48,7 +44,7 @@ const ListManager = ({
           {name}
         </Text>
       </label>
-      <TextArea
+      <TextField.Input
         name={name}
         value={inputValue}
         onChange={handleInputChange}

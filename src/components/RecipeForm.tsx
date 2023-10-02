@@ -41,9 +41,6 @@ const RecipeForm = ({
 }: RecipeProps) => {
   const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState<Recipe>(initialData);
-  const [ingredients, setIngredients] = useState<string[]>(
-    initialData.ingredients || []
-  );
 
   const resetRecipeData = () => {
     setRecipeData(initialData);
@@ -75,10 +72,23 @@ const RecipeForm = ({
   };
 
   const handleUpdateIngredients = (newIngredients: string[]) => {
-    setIngredients(newIngredients);
     setRecipeData((prevData) => ({
       ...prevData,
       ingredients: newIngredients,
+    }));
+  };
+
+  const handleUpdateSteps = (newSteps: string[]) => {
+    setRecipeData((prevData) => ({
+      ...prevData,
+      steps: newSteps,
+    }));
+  };
+
+  const handleUpdateHashtags = (newHashtags: string[]) => {
+    setRecipeData((prevData) => ({
+      ...prevData,
+      hashtags: newHashtags,
     }));
   };
 
@@ -123,6 +133,12 @@ const RecipeForm = ({
               onUpdateList={handleUpdateIngredients}
               inputPlaceholder="Enter an ingredient"
             />
+            <ListManager
+              name="steps"
+              value={recipeData.steps}
+              onUpdateList={handleUpdateSteps}
+              inputPlaceholder="Enter a step"
+            />
             <label>
               <Text as="div" size="2" mb="1" weight="bold">
                 Rating
@@ -153,6 +169,12 @@ const RecipeForm = ({
               value={recipeData?.description ?? ""}
               onChange={handleInputChange}
               placeholder="Description or notes"
+            />
+            <ListManager
+              name="hashtags"
+              value={recipeData.hashtags}
+              onUpdateList={handleUpdateHashtags}
+              inputPlaceholder="Enter a hashtag"
             />
           </Flex>
           <Flex gap="3" mt="4" justify="end">
