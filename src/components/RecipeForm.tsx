@@ -13,6 +13,7 @@ import {
 import { useSession } from "next-auth/react";
 import { Recipe } from "@prisma/client";
 import { Session } from "next-auth";
+import ListManager from "./ListManager";
 
 type RecipeProps = {
   initialData: Recipe;
@@ -40,7 +41,9 @@ const RecipeForm = ({
 }: RecipeProps) => {
   const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState<Recipe>(initialData);
-  const [ingredientInput, setIngredientInput] = useState<string>("");
+  const [ingredients, setIngredients] = useState<string[]>(
+    initialData.ingredients || []
+  );
 
   const resetRecipeData = () => {
     setRecipeData(initialData);
@@ -54,13 +57,6 @@ const RecipeForm = ({
       [name]: value,
     }));
   };
-
-  // const handleCategoryChange = (value: string) => {
-  //   setRecipeData((prevData: Recipe) => ({
-  //     ...prevData,
-  //     category: value,
-  //   }));
-  // };
 
   useEffect(() => {
     console.log({ recipeData });
@@ -78,40 +74,13 @@ const RecipeForm = ({
     setRecipeData((prevData: Recipe) => ({ ...prevData, rating: newValue }));
   };
 
-  // TODO: make generic to handle change for steps and hashtags
-  const handleIngredientInputChange = (e: any) => {
-    setIngredientInput(e.target.value);
-  };
-
-  const handleAddIngredient = () => {
-    if (ingredientInput.trim() !== "") {
-      setRecipeData((prevData: Recipe) => ({
-        ...prevData,
-        ingredients: [...prevData.ingredients, ingredientInput],
-      }));
-
-      setIngredientInput("");
-    }
-  };
-
-  const handleDeleteIngredient = (indexToDelete: number) => {
-    const updatedIngredients = recipeData.ingredients.filter(
-      (_, index) => index !== indexToDelete
-    );
-    setRecipeData((prevData: Recipe) => ({
+  const handleUpdateIngredients = (newIngredients: string[]) => {
+    setIngredients(newIngredients);
+    setRecipeData((prevData) => ({
       ...prevData,
-      ingredients: updatedIngredients,
+      ingredients: newIngredients,
     }));
   };
-
-  //   const handleSave = async () => {
-  //     try {
-  //       const newRecipe = await createRecipe(recipeData);
-  //       console.log("Recipe saved:", newRecipe);
-  //     } catch (error) {
-  //       console.error("Error saving recipe:", error);
-  //     }
-  //   };
 
   const handleSubmit = (e: any) => {
     if (session) {
@@ -148,34 +117,12 @@ const RecipeForm = ({
               onChange={handleInputChange}
               placeholder="Link to recipe if applicable"
             />
-            <label>
-              <Text as="div" size="2" mb="1" weight="bold">
-                Ingredients
-              </Text>
-            </label>
-            <TextArea
+            <ListManager
               name="ingredients"
-              value={ingredientInput}
-              onChange={handleIngredientInputChange}
-              placeholder="Enter an ingredient"
+              value={recipeData.ingredients}
+              onUpdateList={handleUpdateIngredients}
+              inputPlaceholder="Enter an ingredient"
             />
-            <Button onClick={handleAddIngredient}>Add</Button>
-            <ul>
-              {recipeData.ingredients.map((ingredient, index) => (
-                <li key={index}>
-                  {ingredient}{" "}
-                  <Button onClick={() => handleDeleteIngredient(index)}>
-                    Delete
-                  </Button>
-                </li>
-              ))}
-            </ul>
-            {/* <TextArea
-              name="steps"
-              value={recipeData.steps}
-              onChange={handleInputChange}
-              placeholder="Steps of recipe"
-            /> */}
             <label>
               <Text as="div" size="2" mb="1" weight="bold">
                 Rating
@@ -187,25 +134,6 @@ const RecipeForm = ({
                 }}
               />
             </label>
-            {/* <Select.Root
-              name="category"
-              value={recipeData?.hashtags ?? []}
-              onValueChange={handleCategoryChange}
-            >
-              <Select.Trigger
-                name="category"
-                value={recipeData?.hashtags ?? []}
-                placeholder="Select a category..."
-              />
-              <Select.Content>
-                <Select.Group>
-                  <Select.Item value="appetizer">Appetizer</Select.Item>
-                  <Select.Item value="Main">Main</Select.Item>
-                  <Select.Item value="Dessert">Dessert</Select.Item>
-                  <Select.Item value="appetizer">Snack</Select.Item>
-                </Select.Group>
-              </Select.Content>
-            </Select.Root> */}
             <Flex>
               <Text size="2">
                 <label>
