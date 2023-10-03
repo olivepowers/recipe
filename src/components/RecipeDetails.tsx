@@ -42,6 +42,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
 
   const tooltipContent = isAdded ? "Added to RecipeBox" : "Add to RecipeBox";
 
+  // TODO: Refactor to add to watch list on user's page
   const handleAdd = async (session: Session, data: Recipe) => {
     console.log({ data });
     try {
