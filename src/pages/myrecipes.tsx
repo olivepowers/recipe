@@ -8,22 +8,60 @@ import AddRecipeModal from "@web/components/AddRecipeModal";
 import { Recipe } from "@prisma/client";
 import Sidebar from "@web/components/Sidebar";
 import { useState } from "react";
-export const getServerSideProps: GetServerSideProps = async (context) => {
+
+const getHashtags = (hashtagStr?: string) => {
+  const hashtags = hashtagStr ? hashtagStr.split(",") : [];
+  return hashtags;
+};
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context); // Get the session data
-  const recipes = await prisma.recipe.findMany({
-    where: {
-      author: {
-        email: session?.user?.email || null,
-      },
+  const hashtags = getHashtags(context.query?.hashtags);
+
+  let where: {
+    author: { email: string | null };
+    hashtags?: { hasSome: string[] };
+  } = {
+    author: {
+      email: session?.user?.email || null,
     },
+  };
+
+  if (hashtags.length !== 0) {
+    where["hashtags"] = {
+      hasSome: hashtags,
+    };
+  }
+
+  const recipes = await prisma.recipe.findMany({
+    where: where,
   });
+
+  const recipeHashtags = await prisma.recipe
+    .findMany({
+      where: {
+        author: {
+          email: session?.user?.email || null,
+        },
+      },
+    })
+    .then((recipes) => {
+      const allRecipeHashtags = recipes.reduce((acc: string[], recipe) => {
+        if (recipe.hashtags && recipe.hashtags.length > 0) {
+          acc.push(...recipe.hashtags);
+        }
+        return acc;
+      }, []);
+      return Array.from(new Set(allRecipeHashtags));
+    });
   return {
-    props: { recipes },
+    props: { recipes, recipeHashtags },
   };
 };
 
 type Props = {
   recipes: Recipe[];
+  recipeHashtags: string[];
 };
 
 export default function MyRecipes(props: Props) {
@@ -34,7 +72,7 @@ export default function MyRecipes(props: Props) {
     <Layout>
       <AddRecipeModal isOpen={isAddModalOpen} setIsOpen={setIsAddModalOpen} />
       <div className="flex">
-        <Sidebar />
+        <Sidebar hashtags={props.recipeHashtags} />
         <div className="flex-1 p-5">
           <Flex className="min-h-screen p-5 flex-col">
             <Flex justify="end" p="2">

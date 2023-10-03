@@ -29,13 +29,25 @@ export const getServerSideProps: GetServerSideProps = async (ctx: any) => {
           }
         : {},
   });
+
+  const recipeHashtags = await prisma.recipe.findMany().then((recipes) => {
+    const allRecipeHashtags = recipes.reduce((acc: string[], recipe) => {
+      if (recipe.hashtags && recipe.hashtags.length > 0) {
+        acc.push(...recipe.hashtags);
+      }
+      return acc;
+    }, []);
+    return Array.from(new Set(allRecipeHashtags));
+  });
+
   return {
-    props: { recipes },
+    props: { recipes, recipeHashtags },
   };
 };
 
 type Props = {
   recipes: Recipe[];
+  recipeHashtags: string[];
 };
 
 export default function Home(props: Props) {
@@ -46,7 +58,7 @@ export default function Home(props: Props) {
       <AddRecipeModal isOpen={isAddModalOpen} setIsOpen={setIsAddModalOpen} />
 
       <div className="flex">
-        <Sidebar />
+        <Sidebar hashtags={props.recipeHashtags} />
         <div className="flex-1 p-5">
           <Flex justify="end" p="2">
             <Button onClick={() => setIsAddModalOpen(true)}>Add Recipe</Button>

@@ -31,11 +31,11 @@ const CollapsibleSection = ({
   );
 };
 
-// TODO: have sidebar take in the hashtags from the user/
-// user + followers depending on page
-export default function Sidebar() {
-  const HASHTAGS = ["cookies", "italian"];
-
+export default function Sidebar({
+  hashtags: HASHTAGS,
+}: {
+  hashtags: string[];
+}) {
   const router = useRouter();
 
   // @ts-expect-error
