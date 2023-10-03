@@ -3,17 +3,25 @@ import {
   Box,
   Button,
   Card,
-  ContextMenu,
+  Badge,
   DropdownMenu,
   Flex,
   Grid,
   Heading,
   Text,
+  IconButton,
+  Tooltip,
 } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import EditRecipeModal from "./EditRecipeModal";
 import { Recipe } from "@prisma/client";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { Session } from "next-auth";
+import {
+  CheckIcon,
+  DotsVerticalIcon,
+  PlusCircledIcon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 
 type Props = {
   recipe: Recipe;
@@ -26,9 +34,38 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
   const isAuthor = session?.user?.email === recipe.author?.email;
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
 
   const handleEditModalOpen = () => {
     setIsEditModalOpen(true);
+  };
+
+  const tooltipContent = isAdded ? "Added to RecipeBox" : "Add to RecipeBox";
+
+  const handleAdd = async (session: Session, data: Recipe) => {
+    console.log({ data });
+    try {
+      const response = await fetch("/api/copyrecipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          // @ts-expect-error ID is actually on session but not on type
+          authorId: session?.user?.id,
+        }),
+      });
+
+      if (response.ok) {
+        const newRecipe = await response.json();
+        console.log("Recipe Saved:", newRecipe);
+      } else {
+        console.error("Error saving recipe:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error saving recipe:", error);
+    }
   };
 
   return (
@@ -65,6 +102,20 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
               </DropdownMenu.Content>
             </DropdownMenu.Root>
           )}
+          {!isAuthor && session && (
+            <Tooltip content={tooltipContent}>
+              <IconButton
+                radius="full"
+                onClick={() => {
+                  handleAdd(session, recipe);
+                  setIsAdded(true);
+                }}
+                disabled={isAdded}
+              >
+                {isAdded ? <CheckIcon /> : <PlusIcon />}
+              </IconButton>
+            </Tooltip>
+          )}
         </Flex>
         <Flex gap="3" align="start" direction="column">
           <Flex gap="3" direction="row">
@@ -81,6 +132,13 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
                 {/* @ts-expect-error make the author defined in getServerSideProps */}
                 {recipe.author?.name ? recipe.author.name : "No author"}
               </Text>
+              <Flex direction="row" gap="2">
+                {recipe.hashtags.map((hashtag, index) => (
+                  <Badge radius="full" key={index}>
+                    #{hashtag}
+                  </Badge>
+                ))}
+              </Flex>
               <Text>{recipe.description}</Text>
             </Flex>
           </Flex>

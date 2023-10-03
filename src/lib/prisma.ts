@@ -30,4 +30,14 @@ export async function deleteRecipe(recipeId: number) {
   return deletedRecipe;
 }
 
+export async function copyRecipe(recipeData: Recipe, userId: string) {
+  const copiedRecipe = await prisma.recipe.create({
+    data: {
+      ...recipeData,
+      authorId: userId,
+    },
+  });
+  return copiedRecipe;
+}
+
 export default prisma;
