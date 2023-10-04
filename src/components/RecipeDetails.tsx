@@ -28,13 +28,13 @@ type Props = {
   recipe: Recipe;
 };
 
-const RecipeDetails: React.FC<Props> = ({ recipe }) => {
+const RecipeDetails: React.FC<Props> = ({ recipe: initialRecipe }) => {
+  const [recipe, setRecipe] = useState(initialRecipe);
+
   const { data: session } = useSession();
   // TODO: verify author off id not email
   // @ts-expect-error change recipeprops to include author
   const isAuthor = session?.user?.email === recipe.author?.email;
-
-  const router = useRouter();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
@@ -87,7 +87,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
       if (response.ok) {
         const deletedRecipe = await response.json();
         console.log("Recipe Deleted:", deletedRecipe);
-        router.push("/myrecipes");
+        window.history.back();
       } else {
         console.error("Error deleting recipe:", response.statusText);
       }
@@ -199,6 +199,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
         isOpen={isEditModalOpen}
         setIsOpen={setIsEditModalOpen}
         initialRecipeData={recipe}
+        setRecipe={setRecipe}
       />
     </Flex>
   );

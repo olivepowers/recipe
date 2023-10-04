@@ -9,10 +9,12 @@ const EditRecipeModal = ({
   initialRecipeData,
   isOpen,
   setIsOpen,
+  setRecipe,
 }: {
   initialRecipeData: Recipe;
   isOpen: boolean;
   setIsOpen: (newIsOpen: boolean) => void;
+  setRecipe: (recipe: Recipe) => void;
 }) => {
   const { data: session } = useSession();
 
@@ -28,7 +30,7 @@ const EditRecipeModal = ({
       if (response.ok) {
         const updatedRecipe = await response.json();
         console.log("Recipe Updated:", updatedRecipe);
-        return updatedRecipe;
+        setRecipe(updatedRecipe.recipe);
       } else {
         const errorData = await response.json();
         console.error("Error updating recipe:", errorData);
