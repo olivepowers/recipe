@@ -30,14 +30,31 @@ export async function deleteRecipe(recipeId: number) {
   return deletedRecipe;
 }
 
-export async function copyRecipe(recipeData: Recipe, userId: string) {
-  const copiedRecipe = await prisma.recipe.create({
-    data: {
-      ...recipeData,
+export async function addToWatchList(recipeId: number, userId: string) {
+  let watchList = await prisma.list.findFirst({
+    where: {
       authorId: userId,
+      name: "Watch List",
     },
   });
-  return copiedRecipe;
+
+  if (!watchList) {
+    watchList = await prisma.list.create({
+      data: {
+        name: "Watch List",
+        authorId: userId,
+      },
+    });
+  }
+
+  const listRecipe = await prisma.listRecipe.create({
+    data: {
+      listId: watchList.id,
+      recipeId: recipeId,
+    },
+  });
+
+  return listRecipe;
 }
 
 export default prisma;

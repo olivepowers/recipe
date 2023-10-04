@@ -16,6 +16,7 @@ import { useSession } from "next-auth/react";
 import EditRecipeModal from "./EditRecipeModal";
 import { Recipe } from "@prisma/client";
 import { Session } from "next-auth";
+import { Router, useRouter } from "next/router";
 import {
   CheckIcon,
   DotsVerticalIcon,
@@ -33,6 +34,8 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
   // @ts-expect-error change recipeprops to include author
   const isAuthor = session?.user?.email === recipe.author?.email;
 
+  const router = useRouter();
+
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
@@ -40,10 +43,10 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
     setIsEditModalOpen(true);
   };
 
-  const tooltipContent = isAdded ? "Added to RecipeBox" : "Add to RecipeBox";
+  const tooltipContent = isAdded ? "Added to Watch List" : "Add to Watch Lidt";
 
   // TODO: Refactor to add to watch list on user's page
-  const handleAdd = async (session: Session, data: Recipe) => {
+  const handleAddToWatchList = async (session: Session, data: Recipe) => {
     console.log({ data });
     try {
       const response = await fetch("/api/copyrecipe", {
@@ -63,6 +66,30 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
         console.log("Recipe Saved:", newRecipe);
       } else {
         console.error("Error saving recipe:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error saving recipe:", error);
+    }
+  };
+
+  const handleDelete = async (data: Recipe) => {
+    try {
+      const response = await fetch("/api/recipe", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          recipeData: data,
+        }),
+      });
+
+      if (response.ok) {
+        const deletedRecipe = await response.json();
+        console.log("Recipe Deleted:", deletedRecipe);
+        router.push("/myrecipes");
+      } else {
+        console.error("Error deleting recipe:", response.statusText);
       }
     } catch (error) {
       console.error("Error saving recipe:", error);
@@ -99,7 +126,12 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
                   {/* <EditRecipeModal initialRecipeData={recipe} /> */}
                   Edit
                 </DropdownMenu.Item>
-                <DropdownMenu.Item color="red">Delete</DropdownMenu.Item>
+                <DropdownMenu.Item
+                  onClick={() => handleDelete(recipe)}
+                  color="red"
+                >
+                  Delete
+                </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Root>
           )}
@@ -108,7 +140,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe }) => {
               <IconButton
                 radius="full"
                 onClick={() => {
-                  handleAdd(session, recipe);
+                  handleAddToWatchList(session, recipe);
                   setIsAdded(true);
                 }}
                 disabled={isAdded}

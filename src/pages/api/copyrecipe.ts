@@ -1,6 +1,6 @@
 // pages/api/copyrecipe
 import { Recipe } from "@prisma/client";
-import prisma, { copyRecipe } from "@web/lib/prisma"; // Import your createRecipe function
+import prisma, { addToWatchList } from "@web/lib/prisma";
 import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -29,14 +29,11 @@ export default async function handler(
   try {
     if (req.method === "POST") {
       const recipe = req.body;
-      recipe.id = undefined;
-      recipe.authorId = undefined;
-      recipe.author = undefined;
 
       // Perform data validation and create the recipe using Prisma
-      const copiedRecipe = await copyRecipe(recipe as Recipe, userId);
+      const addedToWatchList = await addToWatchList(recipe.id, userId);
 
-      return res.status(201).json({ recipe: copiedRecipe });
+      return res.status(201).json({ recipe: addedToWatchList });
     } else {
       return res.status(405).json({ error: "Method not allowed" });
     }
