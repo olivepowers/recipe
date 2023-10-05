@@ -85,6 +85,20 @@ const RecipeForm = ({
     }));
   };
 
+  const handleImageUpload = (e: any) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setRecipeData((prevData) => ({
+          ...prevData,
+          picture: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleUpdateHashtags = (newHashtags: string[]) => {
     setRecipeData((prevData) => ({
       ...prevData,
@@ -115,12 +129,18 @@ const RecipeForm = ({
               onChange={handleInputChange}
               placeholder="Your recipe title"
             />
-            <TextField.Input
+            <input
+              name="picture"
+              type="file"
+              accept="image/*"
+              onChange={handleImageUpload}
+            />
+            {/* <TextField.Input
               name="picture"
               value={recipeData?.picture ?? "Default Image URL TODO"}
               onChange={handleInputChange}
               placeholder="Insert a picture"
-            />
+            /> */}
             <TextField.Input
               name="link"
               value={recipeData?.link ?? ""}

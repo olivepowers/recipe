@@ -153,8 +153,9 @@ const RecipeDetails: React.FC<Props> = ({ recipe: initialRecipe }) => {
         <Flex gap="3" align="start" direction="column">
           <Flex gap="3" direction="row">
             <Box>
+              {/* TODO: style image */}
               <img
-                src="/logo.png"
+                src={recipe.picture || "/logo.png"}
                 alt="Logo"
                 className="object-cover w-full h-full"
               />

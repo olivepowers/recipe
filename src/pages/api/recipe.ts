@@ -9,6 +9,14 @@ import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb",
+    },
+  },
+};
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
