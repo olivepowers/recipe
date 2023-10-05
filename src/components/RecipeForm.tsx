@@ -129,6 +129,7 @@ const RecipeForm = ({
               onChange={handleInputChange}
               placeholder="Your recipe title"
             />
+            {/* TODO: add ability to drag and drop image */}
             <input
               name="picture"
               type="file"
