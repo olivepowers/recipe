@@ -11,6 +11,7 @@ import {
   Text,
   IconButton,
   Tooltip,
+  AspectRatio,
 } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import EditRecipeModal from "./EditRecipeModal";
@@ -152,14 +153,14 @@ const RecipeDetails: React.FC<Props> = ({ recipe: initialRecipe }) => {
         </Flex>
         <Flex gap="3" align="start" direction="column">
           <Flex gap="3" direction="row">
-            <Box>
-              {/* TODO: style image */}
+            {recipe.picture && (
               <img
-                src={recipe.picture || "/logo.png"}
+                src={recipe.picture}
                 alt="Logo"
-                className="object-cover w-full h-full"
+                className="object-cover w-40 h-40"
               />
-            </Box>
+            )}
+
             <Flex direction="column">
               <Heading size="7">{recipe.title}</Heading>
               <Text weight="light">
