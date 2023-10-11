@@ -28,7 +28,6 @@ const AddRecipeModal = ({
   } as Recipe;
 
   const handleSave = async (session: Session, data: Recipe) => {
-    console.log({ data });
     try {
       const response = await fetch("/api/recipe", {
         method: "POST",

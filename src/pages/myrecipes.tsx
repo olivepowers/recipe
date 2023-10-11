@@ -5,7 +5,7 @@ import prisma from "../lib/prisma";
 import RecipeComponent from "@web/components/RecipeComponent";
 import Layout from "@web/components/Layout";
 import AddRecipeModal from "@web/components/AddRecipeModal";
-import { List, Recipe, ListRecipe } from "@prisma/client";
+import { List, Recipe, ListRecipe, User } from "@prisma/client";
 import Sidebar from "@web/components/Sidebar";
 import { Fragment, useState } from "react";
 import { PlusIcon } from "@radix-ui/react-icons";
@@ -15,19 +15,20 @@ const getHashtags = (hashtagStr?: string) => {
   return hashtags;
 };
 
+// have list displayed filtered here on server side props
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context); // Get the session data
   const hashtags = getHashtags(context.query?.hashtags);
-  const listTab = context.query?.list;
-  console.log(listTab);
+  // const listTab = context.query?.list;
+  // console.log(listTab);
 
   let where: {
-    author: { email: string | null };
+    author?: { email: string | null };
     hashtags?: { hasSome: string[] };
   } = {
-    author: {
-      email: session?.user?.email || null,
-    },
+    // author: {
+    //   email: session?.user?.email || null,
+    // },
   };
 
   if (hashtags.length !== 0) {
@@ -38,6 +39,10 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   const recipes = await prisma.recipe.findMany({
     where: where,
+    include: {
+      author: true,
+      lists: true,
+    },
   });
 
   const recipeHashtags = await prisma.recipe
@@ -67,21 +72,28 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   });
 
   return {
-    props: { recipes, recipeHashtags, lists, listTab },
+    props: { recipes, recipeHashtags, lists },
   };
 };
 
+type RecipeWithListsAndAuthor = Recipe & {
+  lists: ListRecipe[];
+  author: User;
+};
+
 type Props = {
-  recipes: Recipe[];
+  recipes: RecipeWithListsAndAuthor[];
   recipeHashtags: string[];
   lists: List[];
-  listTab: string;
 };
+// type Props = typeof
 
 export default function MyRecipes(props: Props) {
   console.log("props", { props });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedList, setSelectedList] = useState<List | null>();
+
+  console.log({ selectedList });
 
   return (
     <Layout>
