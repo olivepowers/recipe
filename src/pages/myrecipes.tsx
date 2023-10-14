@@ -16,41 +16,13 @@ const getHashtags = (hashtagStr?: string) => {
   return hashtags;
 };
 
-// Hashtags: recipe.hashtags
-// Author: recipe.author_id
-// Lists: list_item, join query
-
-// have list displayed filtered here on server side props
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context); // Get the session data
-  const hashtags = getHashtags(context.query?.hashtags);
-  const listTab = parseInt(context.query?.list);
-  // console.log(listTab);
+  const session = await getSession(context);
 
-  // TODO: create helper function for getting user id from email
+  // Create vars from query params
+  const listId = parseInt(context.query?.list_id);
 
-  let where: {
-    author?: { email: string | null };
-    hashtags?: { hasSome: string[] };
-    lists?: {
-      some: {
-        listId: number;
-      };
-    };
-  } = {
-    // author: {
-    //   email: session?.user?.email || null,
-    // },
-  };
-
-  if (!isNaN(listTab)) {
-    where["lists"] = {
-      some: {
-        listId: listTab,
-      },
-    };
-  }
-
+  // Get all user lists
   const lists = await prisma.list.findMany({
     where: {
       author: {
@@ -59,43 +31,41 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     },
   });
 
-  if (hashtags.length !== 0) {
-    where["hashtags"] = {
-      hasSome: hashtags,
+  // Build WHERE statement for recipes
+  let where: {
+    author?: { email: string | null };
+    lists?: {
+      some: {
+        listId: number;
+      };
+    };
+  } = {};
+
+  // Only filter by lists if `?list_id` is specified
+  if (!isNaN(listId)) {
+    where["lists"] = {
+      some: {
+        listId: listId,
+      },
+    };
+  } else {
+    // Show author recipes only if no lists are defined
+    where["author"] = {
+      email: session?.user?.email || null,
     };
   }
 
   const recipes = await prisma.recipe.findMany({
-    where: where,
+    // Use built where statement
+    where,
     include: {
       author: true,
       lists: true,
     },
   });
 
-  // const selectedListRecipes = listTab ? recipes.filter((recipe) => recipe.lists.some((list) => list.list?.name === listTab)
-  // ) : recipes;
-
-  const recipeHashtags = await prisma.recipe
-    .findMany({
-      where: {
-        author: {
-          email: session?.user?.email || null,
-        },
-      },
-    })
-    .then((recipes) => {
-      const allRecipeHashtags = recipes.reduce((acc: string[], recipe) => {
-        if (recipe.hashtags && recipe.hashtags.length > 0) {
-          acc.push(...recipe.hashtags);
-        }
-        return acc;
-      }, []);
-      return Array.from(new Set(allRecipeHashtags));
-    });
-
   return {
-    props: { recipes, recipeHashtags, lists, listTab },
+    props: { recipes, lists },
   };
 };
 
@@ -106,31 +76,40 @@ type RecipeWithListsAndAuthor = Recipe & {
 
 type Props = {
   recipes: RecipeWithListsAndAuthor[];
-  recipeHashtags: string[];
   lists: List[];
-  listTab: number;
 };
-// type Props = typeof
 
 export default function MyRecipes(props: Props) {
-  console.log("props", { props });
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedList, setSelectedList] = useState<number | null>(
-    props.listTab
-  );
+  console.log({ props });
   const router = useRouter();
 
-  console.log({ selectedList });
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const selectedList = parseInt((router.query?.list_id as string) ?? "0");
+  const hashtags = Array.from(
+    new Set(props.recipes.flatMap((r) => r.hashtags))
+  );
+  const [selectedHashtags, setHashtags] = useState([]);
+
+  console.log({ hashtags });
 
   return (
     <Layout>
       <AddRecipeModal isOpen={isAddModalOpen} setIsOpen={setIsAddModalOpen} />
       <div className="flex">
-        <Sidebar hashtags={props.recipeHashtags} />
+        <Sidebar
+          hashtags={hashtags}
+          selectedHashtags={selectedHashtags}
+          setSelectedHashtags={setHashtags}
+        />
         <div className="flex-1 p-5">
           <Text size="2">
             <Flex gap="3" align="center">
-              <Button variant="ghost" onClick={() => setSelectedList(null)}>
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  router.push("");
+                }}
+              >
                 My Recipes
               </Button>
               {props.lists.map((list, index) => (
@@ -139,8 +118,7 @@ export default function MyRecipes(props: Props) {
                   <Button
                     variant="ghost"
                     onClick={() => {
-                      setSelectedList(list.id);
-                      router.push("?hashtags=") + list.name;
+                      router.push("?list_id=" + list.id);
                     }}
                   >
                     {list.name}
@@ -159,19 +137,15 @@ export default function MyRecipes(props: Props) {
               </Button>
             </Flex>
             <Flex direction="column" gap="5">
-              {selectedList
-                ? props.recipes
-                    .filter((recipe) =>
-                      recipe.lists.some(
-                        (list: ListRecipe) => list.listId === selectedList
-                      )
-                    )
-                    .map((recipe, index) => (
-                      <RecipeComponent key={index} recipe={recipe} />
-                    ))
-                : props.recipes.map((recipe, index) => (
-                    <RecipeComponent key={index} recipe={recipe} />
-                  ))}
+              {props.recipes
+                .filter(
+                  (recipe) =>
+                    selectedHashtags.length === 0 ||
+                    recipe.hashtags.some((h) => selectedHashtags.includes(h))
+                )
+                .map((recipe, index) => (
+                  <RecipeComponent key={index} recipe={recipe} />
+                ))}
             </Flex>
           </Flex>
         </div>

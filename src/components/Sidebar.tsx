@@ -33,8 +33,12 @@ const CollapsibleSection = ({
 
 export default function Sidebar({
   hashtags: HASHTAGS,
+  setSelectedHashtags,
+  selectedHashtags,
 }: {
   hashtags: string[];
+  selectedHashtags: string[];
+  setSelectedHashtags: (_: string[]) => void;
 }) {
   const router = useRouter();
 
@@ -48,12 +52,7 @@ export default function Sidebar({
     } else {
       newHashtags = [...hashtags, hashtag];
     }
-
-    if (newHashtags.length > 0) {
-      router.push("?hashtags=" + newHashtags.join(","));
-    } else {
-      router.push("");
-    }
+    setSelectedHashtags(newHashtags);
   };
 
   return (
@@ -70,7 +69,7 @@ export default function Sidebar({
               <label>
                 <Checkbox
                   className="mr-1"
-                  checked={hashtags.indexOf(c) != -1}
+                  checked={selectedHashtags.indexOf(c) != -1}
                   onClick={() => toggleHashtags(c)}
                 />{" "}
                 {c}
