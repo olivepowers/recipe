@@ -20,12 +20,6 @@ const Header = () => {
         <img src="/logo.png" alt="Logo" width={40} height={60} />
       </Link>
       <Flex gap="4" align="center">
-        <Link href="?mine">
-          <Button color="cyan" variant="ghost">
-            Recipe Box
-          </Button>
-        </Link>
-
         <div onClick={() => router.push("/profile")}>
           <Avatar color="cyan" radius="full" fallback="OP" />
         </div>
