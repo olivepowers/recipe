@@ -88,7 +88,7 @@ export default function MyRecipes(props: Props) {
   const hashtags = Array.from(
     new Set(props.recipes.flatMap((r) => r.hashtags))
   );
-  const [selectedHashtags, setHashtags] = useState([]);
+  const [selectedHashtags, setSelectedHashtags] = useState<string[]>([]);
 
   console.log({ hashtags });
 
@@ -99,7 +99,7 @@ export default function MyRecipes(props: Props) {
         <Sidebar
           hashtags={hashtags}
           selectedHashtags={selectedHashtags}
-          setSelectedHashtags={setHashtags}
+          setSelectedHashtags={setSelectedHashtags}
         />
         <div className="flex-1 p-5">
           <Text size="2">

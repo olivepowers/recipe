@@ -42,15 +42,12 @@ export default function Sidebar({
 }) {
   const router = useRouter();
 
-  // @ts-expect-error
-  const hashtags = getHashtags(router.query?.hashtags);
-
   const toggleHashtags = (hashtag: string) => {
     let newHashtags;
-    if (hashtags.indexOf(hashtag) != -1) {
-      newHashtags = hashtags.filter((h) => h != hashtag);
+    if (selectedHashtags.indexOf(hashtag) != -1) {
+      newHashtags = selectedHashtags.filter((h) => h != hashtag);
     } else {
-      newHashtags = [...hashtags, hashtag];
+      newHashtags = [...selectedHashtags, hashtag];
     }
     setSelectedHashtags(newHashtags);
   };

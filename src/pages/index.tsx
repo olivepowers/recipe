@@ -58,7 +58,7 @@ export default function Home(props: Props) {
       <AddRecipeModal isOpen={isAddModalOpen} setIsOpen={setIsAddModalOpen} />
 
       <div className="flex">
-        <Sidebar hashtags={props.recipeHashtags} />
+        {/* <Sidebar hashtags={props.recipeHashtags} /> */}
         <div className="flex-1 p-5">
           <Flex justify="end" p="2">
             <Button onClick={() => setIsAddModalOpen(true)}>Add Recipe</Button>
