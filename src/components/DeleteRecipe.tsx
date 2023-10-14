@@ -19,7 +19,7 @@ const DeleteRecipe = ({ recipeData }: { recipeData: Recipe }) => {
       if (response.ok) {
         const deletedRecipe = await response.json();
         console.log("Recipe Updated:", deletedRecipe);
-        router.push("/myrecipes");
+        router.push("?mine");
         return deletedRecipe;
       } else {
         const errorData = await response.json();
