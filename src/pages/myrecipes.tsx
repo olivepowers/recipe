@@ -9,27 +9,55 @@ import { List, Recipe, ListRecipe, User } from "@prisma/client";
 import Sidebar from "@web/components/Sidebar";
 import { Fragment, useState } from "react";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/router";
 
 const getHashtags = (hashtagStr?: string) => {
   const hashtags = hashtagStr ? hashtagStr.split(",") : [];
   return hashtags;
 };
 
+// Hashtags: recipe.hashtags
+// Author: recipe.author_id
+// Lists: list_item, join query
+
 // have list displayed filtered here on server side props
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context); // Get the session data
   const hashtags = getHashtags(context.query?.hashtags);
-  // const listTab = context.query?.list;
+  const listTab = parseInt(context.query?.list);
   // console.log(listTab);
+
+  // TODO: create helper function for getting user id from email
 
   let where: {
     author?: { email: string | null };
     hashtags?: { hasSome: string[] };
+    lists?: {
+      some: {
+        listId: number;
+      };
+    };
   } = {
     // author: {
     //   email: session?.user?.email || null,
     // },
   };
+
+  if (!isNaN(listTab)) {
+    where["lists"] = {
+      some: {
+        listId: listTab,
+      },
+    };
+  }
+
+  const lists = await prisma.list.findMany({
+    where: {
+      author: {
+        email: session?.user?.email || null,
+      },
+    },
+  });
 
   if (hashtags.length !== 0) {
     where["hashtags"] = {
@@ -44,6 +72,9 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
       lists: true,
     },
   });
+
+  // const selectedListRecipes = listTab ? recipes.filter((recipe) => recipe.lists.some((list) => list.list?.name === listTab)
+  // ) : recipes;
 
   const recipeHashtags = await prisma.recipe
     .findMany({
@@ -63,16 +94,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
       return Array.from(new Set(allRecipeHashtags));
     });
 
-  const lists = await prisma.list.findMany({
-    where: {
-      author: {
-        email: session?.user?.email || null,
-      },
-    },
-  });
-
   return {
-    props: { recipes, recipeHashtags, lists },
+    props: { recipes, recipeHashtags, lists, listTab },
   };
 };
 
@@ -85,13 +108,17 @@ type Props = {
   recipes: RecipeWithListsAndAuthor[];
   recipeHashtags: string[];
   lists: List[];
+  listTab: number;
 };
 // type Props = typeof
 
 export default function MyRecipes(props: Props) {
   console.log("props", { props });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [selectedList, setSelectedList] = useState<List | null>();
+  const [selectedList, setSelectedList] = useState<number | null>(
+    props.listTab
+  );
+  const router = useRouter();
 
   console.log({ selectedList });
 
@@ -102,20 +129,20 @@ export default function MyRecipes(props: Props) {
         <Sidebar hashtags={props.recipeHashtags} />
         <div className="flex-1 p-5">
           <Text size="2">
-            <Flex
-              gap="3"
-              align="center"
-              // className={`${
-              //   selectedList === "My Recipes" ? "text-blue-500" : ""
-              // }cursor-pointer`}
-            >
+            <Flex gap="3" align="center">
               <Button variant="ghost" onClick={() => setSelectedList(null)}>
                 My Recipes
               </Button>
               {props.lists.map((list, index) => (
                 <Fragment key={index}>
                   <Separator orientation="vertical" />
-                  <Button variant="ghost" onClick={() => setSelectedList(list)}>
+                  <Button
+                    variant="ghost"
+                    onClick={() => {
+                      setSelectedList(list.id);
+                      router.push("?hashtags=") + list.name;
+                    }}
+                  >
                     {list.name}
                   </Button>
                 </Fragment>
@@ -136,7 +163,7 @@ export default function MyRecipes(props: Props) {
                 ? props.recipes
                     .filter((recipe) =>
                       recipe.lists.some(
-                        (list: ListRecipe) => list.listId === selectedList.id
+                        (list: ListRecipe) => list.listId === selectedList
                       )
                     )
                     .map((recipe, index) => (
@@ -145,9 +172,6 @@ export default function MyRecipes(props: Props) {
                 : props.recipes.map((recipe, index) => (
                     <RecipeComponent key={index} recipe={recipe} />
                   ))}
-              {/* {props.recipes.map((recipe, index) => ( */}
-              {/* <RecipeComponent key={index} recipe={recipe} /> */}
-              {/* ))} */}
             </Flex>
           </Flex>
         </div>
