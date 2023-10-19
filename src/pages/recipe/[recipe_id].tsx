@@ -1,3 +1,4 @@
+// TODO: rename file to fix weird link/id mixup -- noted though that only bugs for seeded recipes
 import { Recipe } from "@prisma/client";
 import Layout from "@web/components/Layout";
 import RecipeDetails from "@web/components/RecipeDetails";
