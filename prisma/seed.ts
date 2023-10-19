@@ -31,8 +31,8 @@ const userData: Prisma.UserCreateInput[] = [
         {
           title: "Amy's Famous Monster Cookies",
           description: "Delicious cookies",
-          picture: "ab",
-          link: "ab",
+          picture: "a",
+          link: "b",
           ingredients: ["flour", "butter"],
           steps: ["mix", "bake"],
           rating: 4.5,
@@ -42,8 +42,8 @@ const userData: Prisma.UserCreateInput[] = [
         {
           title: "Pizza",
           description: "mozzarella",
-          picture: "ab",
-          link: "ab",
+          picture: "c",
+          link: "d",
           ingredients: ["flour", "butter"],
           steps: ["mix", "bake"],
           rating: 4.5,

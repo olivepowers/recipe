@@ -15,6 +15,7 @@ const RecipeComponent: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   const router = useRouter();
 
   const handleClick = () => {
+    console.log(recipe.id);
     router.push("/recipe/" + recipe.id);
   };
 

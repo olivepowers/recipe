@@ -6,6 +6,7 @@ import { GetServerSideProps } from "next";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { recipe_id } = context.query;
+  console.log({ ...context.query });
 
   const id = recipe_id ? parseInt(recipe_id as string, 10) : undefined;
 

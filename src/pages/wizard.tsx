@@ -1,10 +1,12 @@
 import Layout from "@web/components/Layout";
+import RecipeGenerator from "@web/components/RecipeGeneratorModal";
 import { useState } from "react";
 
 const GenerateRecipe = () => {
   const [idea, setIdea] = useState("");
   const [ingredients, setIngredients] = useState("");
   const [recipe, setRecipe] = useState(null);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(true);
 
   const generateRecipe = async () => {
     const requestData = { idea, ingredients: ingredients.split(",") };
@@ -31,6 +33,7 @@ const GenerateRecipe = () => {
 
   return (
     <Layout>
+      <RecipeGenerator isOpen={isAddModalOpen} setIsOpen={setIsAddModalOpen} />
       <div>
         <label>Idea:</label>
         <input

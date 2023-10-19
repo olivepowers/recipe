@@ -1,4 +1,4 @@
-import { Button, Flex, Separator, Text } from "@radix-ui/themes";
+import { Button, DropdownMenu, Flex, Separator, Text } from "@radix-ui/themes";
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import prisma from "../lib/prisma";
@@ -8,8 +8,9 @@ import AddRecipeModal from "@web/components/AddRecipeModal";
 import { List, Recipe, ListRecipe, User } from "@prisma/client";
 import Sidebar from "@web/components/Sidebar";
 import { Fragment, useState } from "react";
-import { PlusIcon } from "@radix-ui/react-icons";
+import { PlusCircledIcon, PlusIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/router";
+import RecipeGenerator from "@web/components/RecipeGeneratorModal";
 
 const getHashtags = (hashtagStr?: string) => {
   const hashtags = hashtagStr ? hashtagStr.split(",") : [];
@@ -87,6 +88,7 @@ export default function MyRecipes(props: Props) {
   const router = useRouter();
 
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isGeneratorModalOpen, setisGeneratorModalOpen] = useState(false);
   const selectedList = parseInt((router.query?.list_id as string) ?? "0");
   const hashtags = Array.from(
     new Set(props.recipes.flatMap((r) => r.hashtags))
@@ -98,6 +100,10 @@ export default function MyRecipes(props: Props) {
   return (
     <Layout>
       <AddRecipeModal isOpen={isAddModalOpen} setIsOpen={setIsAddModalOpen} />
+      <RecipeGenerator
+        isOpen={isGeneratorModalOpen}
+        setIsOpen={setisGeneratorModalOpen}
+      />
       <div className="flex">
         <Sidebar
           hashtags={hashtags}
@@ -115,6 +121,7 @@ export default function MyRecipes(props: Props) {
               >
                 All Recipes
               </Button>
+              <Separator orientation="vertical" />
               <Button
                 variant="ghost"
                 onClick={() => {
@@ -143,9 +150,39 @@ export default function MyRecipes(props: Props) {
           </Text>
           <Flex className="min-h-screen p-5 flex-col">
             <Flex justify="end" p="2">
-              <Button onClick={() => setIsAddModalOpen(true)}>
+              {/* <Button onClick={() => setIsAddModalOpen(true)}>
                 Add Recipe
-              </Button>
+              </Button> */}
+              <DropdownMenu.Root>
+                <DropdownMenu.Trigger>
+                  <Button
+                    radius="full"
+                    // style={{
+                    //   width: "15px",
+                    //   height: "15px",
+                    //   padding: 0,
+                    //   backgroundColor: "transparent",
+                    //   border: "none",
+                    //   display: "flex",
+                    //   alignItems: "center",
+                    //   justifyContent: "center",
+                    //   cursor: "pointer",
+                    // }}
+                  >
+                    <PlusIcon />
+                  </Button>
+                </DropdownMenu.Trigger>
+                <DropdownMenu.Content variant="soft">
+                  <DropdownMenu.Item onClick={() => setIsAddModalOpen(true)}>
+                    Add Recipe
+                  </DropdownMenu.Item>
+                  <DropdownMenu.Item
+                    onClick={() => setisGeneratorModalOpen(true)}
+                  >
+                    Generate Recipe
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Root>
             </Flex>
             <Flex direction="column" gap="5">
               {props.recipes
@@ -155,7 +192,7 @@ export default function MyRecipes(props: Props) {
                     recipe.hashtags.some((h) => selectedHashtags.includes(h))
                 )
                 .map((recipe, index) => (
-                  <RecipeComponent key={index} recipe={recipe} />
+                  <RecipeComponent key={index} recipe={recipe as Recipe} />
                 ))}
             </Flex>
           </Flex>
