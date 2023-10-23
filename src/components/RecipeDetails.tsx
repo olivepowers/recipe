@@ -44,10 +44,14 @@ const RecipeDetails: React.FC<Props> = ({ recipe: initialRecipe }) => {
     setIsEditModalOpen(true);
   };
 
-  const tooltipContent = isAdded ? "Added to Watch List" : "Add to Watch Lidt";
+  const tooltipContent = isAdded ? "Added to Watch List" : "Add to Watch List";
 
   // TODO: Refactor to add to watch list on user's page
-  const handleAddToWatchList = async (session: Session, data: Recipe) => {
+  const handleAddToWatchList = async (
+    session: Session,
+    data: Recipe,
+    listName: string
+  ) => {
     console.log({ data });
     try {
       const response = await fetch("/api/copyrecipe", {
@@ -59,6 +63,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe: initialRecipe }) => {
           ...data,
           // @ts-expect-error ID is actually on session but not on type
           authorId: session?.user?.id,
+          listName,
         }),
       });
 
@@ -141,7 +146,7 @@ const RecipeDetails: React.FC<Props> = ({ recipe: initialRecipe }) => {
               <IconButton
                 radius="full"
                 onClick={() => {
-                  handleAddToWatchList(session, recipe);
+                  handleAddToWatchList(session, recipe, "Watch List");
                   setIsAdded(true);
                 }}
                 disabled={isAdded}

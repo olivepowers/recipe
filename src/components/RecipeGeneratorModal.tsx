@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { Recipe } from "@prisma/client";
 import { Session } from "next-auth";
 import ListManager from "./ListManager";
+import RecipeForm from "./RecipeForm";
 
 const RecipeGenerator = ({
   isOpen,
@@ -17,7 +18,7 @@ const RecipeGenerator = ({
     description: "",
     ingredients: [],
   });
-  const [recipe, setRecipe] = useState();
+  const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
 
   const resetRecipeData = () => {
     setGeneratedFields({
@@ -56,13 +57,47 @@ const RecipeGenerator = ({
 
       if (response.ok) {
         const data = await response.json();
-        setRecipe(data);
-        console.log({ recipe });
+        const genRecipe = {
+          title: data.title,
+          picture: "",
+          ingredients: data.ingredients,
+          steps: data.steps,
+          rating: 0,
+          hashtags: data.hashtags,
+          status: "wanttomake",
+          description: "",
+        } as Recipe;
+        setGeneratedRecipe(genRecipe);
       } else {
         console.error("Failed to generate recipe");
       }
     } catch (error) {
       console.error("An error occurred while fetching data:", error);
+    }
+  };
+
+  const handleSave = async (session: Session, data: Recipe) => {
+    try {
+      const response = await fetch("/api/recipe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...data,
+          // @ts-expect-error ID is actually on session but not on type
+          authorId: session?.user?.id,
+        }),
+      });
+
+      if (response.ok) {
+        const newRecipe = await response.json();
+        console.log("Recipe Saved:", newRecipe);
+      } else {
+        console.error("Error saving recipe:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error saving recipe:", error);
     }
   };
 
@@ -100,6 +135,16 @@ const RecipeGenerator = ({
           </Flex>
         </Dialog.Content>
       </Dialog.Root>
+      {generatedRecipe && (
+        <RecipeForm
+          initialData={generatedRecipe}
+          onSubmit={handleSave}
+          buttonText="Add Generated Recipes"
+          modalDescription="Add generated recipe to recipes"
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
+      )}
     </Flex>
   );
 };

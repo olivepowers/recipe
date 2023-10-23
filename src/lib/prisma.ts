@@ -30,18 +30,49 @@ export async function deleteRecipe(recipeId: number) {
   return deletedRecipe;
 }
 
-export async function addToWatchList(recipeId: number, userId: string) {
-  let watchList = await prisma.list.findFirst({
+// export async function addToWatchList(recipeId: number, userId: string) {
+//   let watchList = await prisma.list.findFirst({
+//     where: {
+//       authorId: userId,
+//       name: "Watch List",
+//     },
+//   });
+
+//   if (!watchList) {
+//     watchList = await prisma.list.create({
+//       data: {
+//         name: "Watch List",
+//         authorId: userId,
+//       },
+//     });
+//   }
+
+//   const listRecipe = await prisma.listRecipe.create({
+//     data: {
+//       listId: watchList.id,
+//       recipeId: recipeId,
+//     },
+//   });
+
+//   return listRecipe;
+// }
+
+export async function addToList(
+  recipeId: number,
+  userId: string,
+  listName: string
+) {
+  let list = await prisma.list.findFirst({
     where: {
       authorId: userId,
-      name: "Watch List",
+      name: listName,
     },
   });
 
-  if (!watchList) {
-    watchList = await prisma.list.create({
+  if (!list) {
+    list = await prisma.list.create({
       data: {
-        name: "Watch List",
+        name: listName,
         authorId: userId,
       },
     });
@@ -49,7 +80,7 @@ export async function addToWatchList(recipeId: number, userId: string) {
 
   const listRecipe = await prisma.listRecipe.create({
     data: {
-      listId: watchList.id,
+      listId: list.id,
       recipeId: recipeId,
     },
   });
