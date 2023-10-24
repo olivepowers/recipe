@@ -20,6 +20,7 @@ const RecipeGenerator = ({
   });
   const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
   const [lists, setLists] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const resetRecipeData = () => {
     setGeneratedFields({
@@ -47,6 +48,7 @@ const RecipeGenerator = ({
 
   //   TODO: route to addRecipeModal
   const handleSubmit = async () => {
+    setIsLoading(true);
     try {
       const response = await fetch("/api/generateRecipe", {
         method: "POST",
@@ -78,6 +80,8 @@ const RecipeGenerator = ({
       }
     } catch (error) {
       console.error("An error occurred while fetching data:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -132,34 +136,42 @@ const RecipeGenerator = ({
     <Flex justify="end">
       <Dialog.Root open={isOpen}>
         <Dialog.Content style={{ maxWidth: 500 }}>
-          <Dialog.Title>Generate Recipe</Dialog.Title>
-          <Dialog.Description>
-            Fill out the following fields and get a custom made recipe
-          </Dialog.Description>
-          <Flex direction="column" gap="3">
-            <TextArea
-              name="description"
-              value={generatedFields.description}
-              onChange={handleDescriptionChange}
-              placeholder="Description of what you would like to make (Ex: A would like to make an easy dinner for my family of 4, we follow a pescetarian diet...)"
-            />
-            <ListManager
-              name="Ingredients"
-              value={generatedFields.ingredients}
-              onUpdateList={handleUpdateIngredients}
-              inputPlaceholder="Enter any ingredients you'd like to use"
-            />
-          </Flex>
-          <Flex gap="3" mt="4" justify="end">
-            <Dialog.Close>
-              <Button variant="soft" color="gray" onClick={resetRecipeData}>
-                Cancel
-              </Button>
-            </Dialog.Close>
-            <Dialog.Close>
-              <Button onClick={handleSubmit}>Submit</Button>
-            </Dialog.Close>
-          </Flex>
+          {isLoading ? (
+            <Flex>
+              <Dialog.Title>Generating Recipe...</Dialog.Title>
+            </Flex>
+          ) : (
+            <Flex direction="column">
+              <Dialog.Title>Generate Recipe</Dialog.Title>
+              <Dialog.Description>
+                Fill out the following fields and get a custom made recipe
+              </Dialog.Description>
+              <Flex direction="column" gap="3">
+                <TextArea
+                  name="description"
+                  value={generatedFields.description}
+                  onChange={handleDescriptionChange}
+                  placeholder="Description of what you would like to make (Ex: A would like to make an easy dinner for my family of 4, we follow a pescetarian diet...)"
+                />
+                <ListManager
+                  name="Ingredients"
+                  value={generatedFields.ingredients}
+                  onUpdateList={handleUpdateIngredients}
+                  inputPlaceholder="Enter any ingredients you'd like to use"
+                />
+              </Flex>
+              <Flex gap="3" mt="4" justify="end">
+                <Dialog.Close>
+                  <Button variant="soft" color="gray" onClick={resetRecipeData}>
+                    Cancel
+                  </Button>
+                </Dialog.Close>
+                <Dialog.Close>
+                  <Button onClick={handleSubmit}>Next</Button>
+                </Dialog.Close>
+              </Flex>
+            </Flex>
+          )}
         </Dialog.Content>
       </Dialog.Root>
       {generatedRecipe && (
@@ -167,7 +179,7 @@ const RecipeGenerator = ({
           initialData={generatedRecipe}
           onSubmit={handleSave}
           buttonText="Add Generated Recipes"
-          modalDescription="Add generated recipe to recipes"
+          modalDescription="Create generated recipe"
           isOpen={isOpen}
           setIsOpen={setIsOpen}
         />
