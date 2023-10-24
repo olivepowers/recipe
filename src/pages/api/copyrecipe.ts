@@ -29,6 +29,7 @@ export default async function handler(
   try {
     if (req.method === "POST") {
       const recipe = req.body;
+      console.log("recipe", recipe);
 
       // Perform data validation and create the recipe using Prisma
       const addedToList = await addToList(recipe.id, userId, recipe.listName);

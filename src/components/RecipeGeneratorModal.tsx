@@ -19,6 +19,7 @@ const RecipeGenerator = ({
     ingredients: [],
   });
   const [generatedRecipe, setGeneratedRecipe] = useState<Recipe | null>(null);
+  const [lists, setLists] = useState<string[]>([]);
 
   const resetRecipeData = () => {
     setGeneratedFields({
@@ -57,6 +58,10 @@ const RecipeGenerator = ({
 
       if (response.ok) {
         const data = await response.json();
+        console.log("data", data);
+        console.log(data.lists);
+        setLists(data.lists);
+        console.log(lists);
         const genRecipe = {
           title: data.title,
           picture: "",
@@ -93,6 +98,28 @@ const RecipeGenerator = ({
       if (response.ok) {
         const newRecipe = await response.json();
         console.log("Recipe Saved:", newRecipe);
+        for (const listName of lists) {
+          console.log("listName", listName);
+          const addToListResponse = await fetch("/api/copyrecipe", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              ...(newRecipe.recipe as Recipe),
+              // @ts-expect-error ID is actually on session but not on type
+              authorId: session?.user?.id,
+              listName,
+            }),
+          });
+          if (!addToListResponse.ok) {
+            console.error(
+              "Error adding recipe to list:",
+              addToListResponse.statusText
+            );
+          }
+        }
+        resetRecipeData();
       } else {
         console.error("Error saving recipe:", response.statusText);
       }
