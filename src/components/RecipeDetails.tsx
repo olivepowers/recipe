@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -45,6 +45,25 @@ const RecipeDetails: React.FC<Props> = ({ recipe: initialRecipe }) => {
   };
 
   const tooltipContent = isAdded ? "Added to Watch List" : "Add to Watch List";
+
+  const checkInWatchList = async () => {
+    try {
+      const response = await fetch(`/api/copyrecipe?recipeId=${recipe.id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIsAdded(data.existsInWatchlist);
+      } else {
+        console.error("Error checking watchlist:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error checking watchlist:", error);
+    }
+  };
 
   // TODO: Refactor to add to watch list on user's page
   const handleAddToWatchList = async (
@@ -101,6 +120,12 @@ const RecipeDetails: React.FC<Props> = ({ recipe: initialRecipe }) => {
       console.error("Error saving recipe:", error);
     }
   };
+
+  useEffect(() => {
+    if (session) {
+      checkInWatchList();
+    }
+  }, [session, recipe]);
 
   return (
     <Flex justify="center">

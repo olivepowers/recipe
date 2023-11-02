@@ -1,6 +1,6 @@
 // pages/api/copyrecipe
 import { Recipe } from "@prisma/client";
-import prisma, { addToList } from "@web/lib/prisma";
+import prisma, { addToList, checkInWatchlist } from "@web/lib/prisma";
 import { authOptions } from "./auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import { NextApiRequest, NextApiResponse } from "next";
@@ -35,6 +35,13 @@ export default async function handler(
       const addedToList = await addToList(recipe.id, userId, recipe.listName);
 
       return res.status(201).json({ recipe: addedToList });
+    } else if (req.method === "GET") {
+      const recipeId = req.query.recipeId as string;
+      const existsInWatchlist = await checkInWatchlist(
+        parseInt(recipeId),
+        userId
+      );
+      return res.status(200).json({ existsInWatchlist });
     } else {
       return res.status(405).json({ error: "Method not allowed" });
     }

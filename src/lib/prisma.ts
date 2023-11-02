@@ -57,6 +57,26 @@ export async function deleteRecipe(recipeId: number) {
 //   return listRecipe;
 // }
 
+export async function checkInWatchlist(recipeId: number, userId: string) {
+  let watchList = await prisma.list.findFirst({
+    where: {
+      authorId: userId,
+      name: "Watch List",
+    },
+  });
+  if (!watchList) {
+    return false;
+  }
+  const recipeInWatchlist = await prisma.listRecipe.findFirst({
+    where: {
+      listId: watchList.id,
+      recipeId: recipeId,
+    },
+  });
+
+  return !!recipeInWatchlist;
+}
+
 export async function addToList(
   recipeId: number,
   userId: string,
