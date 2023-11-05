@@ -157,19 +157,15 @@ export default function MyRecipes(props: Props) {
                 <DropdownMenu.Trigger>
                   <Button
                     radius="full"
-                    // style={{
-                    //   width: "15px",
-                    //   height: "15px",
-                    //   padding: 0,
-                    //   backgroundColor: "transparent",
-                    //   border: "none",
-                    //   display: "flex",
-                    //   alignItems: "center",
-                    //   justifyContent: "center",
-                    //   cursor: "pointer",
-                    // }}
+                    className="flex items-center justify-center text-current"
+                    style={{
+                      height: 30,
+                      width: 30,
+                      fontSize: 20,
+                      paddingBottom: 3,
+                    }}
                   >
-                    <PlusIcon />
+                    +
                   </Button>
                 </DropdownMenu.Trigger>
                 <DropdownMenu.Content variant="soft">

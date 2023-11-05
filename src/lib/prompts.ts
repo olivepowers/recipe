@@ -1,5 +1,5 @@
 export const systemPrompt =
-  "You are a recipe developer. You will take in a general idea of what the user would like to make with a list of ingredients they have on hand, it is not necessary to include all ingredients provided in the recipe unless otherwise specified. If the user provides you with measurements please take that into account when developing the recipe. You may also assume that the user has common staple ingredients like oil, salt, flour, butter, etc as well as common appliances unless otherwise specified.";
+  "You are a recipe developer. You will take in a general idea of what the user would like to make with a list of ingredients they have on hand, it is not necessary to include all ingredients provided in the recipe unless otherwise specified. If the user provides you with measurements please take that into account when developing the recipe. You may also assume that the user has common staple ingredients like oil, salt, flour, butter, etc as well as common appliances unless otherwise specified. If a user says surprise me, that they are going to the grocery store, or give you permission to include ingredients they do not have on hand you may do so.";
 
 // TODO: add higher quality examples and more detail on what you want
 export const getRecipePrompt = (idea: string, ingredients: string[]) => {
@@ -76,6 +76,38 @@ Output:
 }
 
 Example 5:
+
+Input:
+{
+    "idea": "I want to make a special Valentines dinner for me and my boyfriend. I know I want steak to be the main dish, but I am open to trying out a fun recipe so go crazy",
+    "ingredients": ["filet mignon", "1 C milk", "parmesan cheese"]
+}
+
+Output:
+{
+    "title": "Filet Mignon in Mushroom Sauce with Mashed Potatoes",
+    "ingredients": ["4 Tbsp unsalted butter, divided",
+        "2 Tbsp olive oil, divided",
+        "16 oz baby bella mushrooms, thickly sliced",
+        "1 small onion, finely diced",
+        "4 garlic cloves, minced",
+        "1 Tbsp fresh thyme, minced (or 1 tsp dry thyme)",
+        "24 oz filet mignon (beef tenderloin) steaks , 6-8 oz each, about 1 1/2" thick",
+        "1/2 cup Merlot wine, or any dry red wine",
+        "1 1/2 cups beef broth",
+        "1/2 cup whipping cream"
+        "1 1/4 tsp sea salt, we use sea salt, divided"
+        "1/2 tsp black pepper, divided"],
+    "steps": ["Place a large heavy-bottomed pan over med/high heat and melt in 2 Tbsp butter and 1 Tbsp oil. Add sliced mushrooms and cook 6 min or until softened and most of the liquid has evaporated. Add diced onion and cook 3 min, stirring often.",
+        "Add minced garlic, 1 Tbsp thyme, 1/4 tsp salt and 1/8 tsp black pepper. Cook, stirring constantly, 2 min or until garlic is fragrant. Transfer mushrooms to a large plate. Wipe pan clean with a wet paper towel.",
+        "Season steaks all over with 1 tsp salt and 1/4 tsp black pepper. Place the same pan over medium/high heat and add 2 Tbsp butter and 1 Tbsp oil. When the butter is hot and finished foaming, add seasoned steaks and sear 3-5 min per side for medium-rare (5-6 min for medium doneness*), turning once. When steaks reach desired doneness, transfer them to the plate with mushrooms.",
+        "In the same pan over med/high heat, add 1/2 cup red wine and boil down until reduced by half (3 min), scraping the bottom to deglaze. Add 1 1/2 cups beef broth and boil until 2/3 cup of liquid remains in the pan (5-7 min). Stir in 1/2 cup cream and boil 2 min or until slightly thickened. Season sauce to taste with salt and pepper if desired.",
+        "Add steaks and mushrooms back to pan, spooning some of the sauce over steaks. Once steaks are just heated through, remove from heat and serve garnished with fresh sprigs of thyme if desired."],
+    "lists": ["Generated Recipes"],
+    "hashtags": ["Fancy Dinner", "Steak"]
+}
+
+Example 6:
 
 Input:
 {
