@@ -27,6 +27,7 @@ const RecipeGenerator = ({
       description: "",
       ingredients: [],
     });
+    setGeneratedRecipe(null);
     setIsOpen(false);
   };
 
@@ -182,6 +183,7 @@ const RecipeGenerator = ({
           modalDescription="Create generated recipe"
           isOpen={isOpen}
           setIsOpen={setIsOpen}
+          onClose={resetRecipeData}
         />
       )}
     </Flex>

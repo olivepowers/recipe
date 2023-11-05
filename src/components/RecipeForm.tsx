@@ -23,6 +23,7 @@ type RecipeProps = {
   isOpen: boolean;
   setIsOpen: (newIsOpen: boolean) => void;
   type?: ModalType;
+  onClose?: () => void;
 };
 
 enum ModalType {
@@ -38,12 +39,16 @@ const RecipeForm = ({
   isOpen,
   setIsOpen,
   type,
+  onClose,
 }: RecipeProps) => {
   const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState<Recipe>(initialData);
 
   const resetRecipeData = () => {
     setRecipeData(initialData);
+    if (onClose) {
+      onClose();
+    }
     setIsOpen(false);
   };
 
