@@ -1,3 +1,5 @@
+import Layout from "@web/components/Layout";
+import SignInPage from "@web/components/SignInPage";
 import { useSession, signOut } from "next-auth/react";
 import Link from "next/link";
 
@@ -9,15 +11,14 @@ export default function Profile() {
   if (session === null) {
     return (
       <>
-        Not signed in <br />
-        <Link href="/api/auth/signin">Sign in</Link>
+        <SignInPage />
       </>
     );
   }
   return (
-    <>
+    <Layout>
       <div>{JSON.stringify(session)}</div>
       <button onClick={() => signOut()}>Sign out</button>
-    </>
+    </Layout>
   );
 }
