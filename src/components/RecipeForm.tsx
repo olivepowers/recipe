@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Dialog,
@@ -44,6 +44,15 @@ const RecipeForm = ({
   const { data: session } = useSession();
   const [recipeData, setRecipeData] = useState<Recipe>(initialData);
 
+  const fileInputRef = useRef(null);
+
+  const openFileInput = () => {
+    if (fileInputRef.current) {
+      // @ts-expect-error
+      fileInputRef.current.click();
+    }
+  };
+
   const resetRecipeData = () => {
     setRecipeData(initialData);
     if (onClose) {
@@ -59,10 +68,6 @@ const RecipeForm = ({
       [name]: value,
     }));
   };
-
-  useEffect(() => {
-    console.log({ recipeData });
-  }, [recipeData]);
 
   const handleChangeStatus = (e: boolean) => {
     let nextStatus = "havemade";
@@ -135,18 +140,17 @@ const RecipeForm = ({
               placeholder="Your recipe title"
             />
             {/* TODO: add ability to drag and drop image */}
+            <Button onClick={openFileInput} variant="outline">
+              Upload an Image
+            </Button>
             <input
+              ref={fileInputRef}
               name="picture"
               type="file"
               accept="image/*"
               onChange={handleImageUpload}
+              style={{ display: "none" }}
             />
-            {/* <TextField.Input
-              name="picture"
-              value={recipeData?.picture ?? "Default Image URL TODO"}
-              onChange={handleInputChange}
-              placeholder="Insert a picture"
-            /> */}
             <TextField.Input
               name="link"
               value={recipeData?.link ?? ""}
