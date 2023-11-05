@@ -30,7 +30,7 @@ export const authOptions = {
     // }),
   ],
   adapter: PrismaAdapter(prisma),
-  // secret: "olivia",
+  secret: "olivia",
 };
 
 export default NextAuth(authOptions);
