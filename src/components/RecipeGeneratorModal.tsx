@@ -150,16 +150,19 @@ const RecipeGenerator = ({
               <Flex direction="column" gap="3">
                 <TextArea
                   name="description"
+                  rows={5}
                   value={generatedFields.description}
                   onChange={handleDescriptionChange}
                   placeholder="Description of what you would like to make (Ex: A would like to make an easy dinner for my family of 4, we follow a pescetarian diet...)"
                 />
+                {/* <Flex> */}
                 <ListManager
                   name="Ingredients"
                   value={generatedFields.ingredients}
                   onUpdateList={handleUpdateIngredients}
                   inputPlaceholder="Enter any ingredients you'd like to use"
                 />
+                {/* </Flex> */}
               </Flex>
               <Flex gap="3" mt="4" justify="end">
                 <Dialog.Close>

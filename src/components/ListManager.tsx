@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, TextField, Flex, Text } from "@radix-ui/themes";
+import { Button, TextField, Flex, Text, Box } from "@radix-ui/themes";
 import { TrashIcon } from "@radix-ui/react-icons";
 
 type ListManagerProps = {
@@ -40,7 +40,7 @@ const ListManager = ({
 
   return (
     <Flex direction="column" gap="3">
-      <label>
+      <label style={items.length == 0 ? { marginBottom: -14 } : {}}>
         <Text as="div" size="2" weight="bold">
           {name}
         </Text>
@@ -65,14 +65,20 @@ const ListManager = ({
           ))}
         </ul>
       </Flex>
-      <Flex gap="1" justify="between">
-        <TextField.Input
-          name={name}
-          value={inputValue}
-          onChange={handleInputChange}
-          placeholder={inputPlaceholder}
-        />
-        <Button onClick={handleAddItem}>Add</Button>
+      <Flex direction="row" gap="3" className="mr-5">
+        <Box grow="1">
+          <TextField.Input
+            name={name}
+            value={inputValue}
+            // className="flex-grow"
+            style={{ flex: 1 }}
+            onChange={handleInputChange}
+            placeholder={inputPlaceholder}
+          />
+        </Box>
+        <Box width="6">
+          <Button onClick={handleAddItem}>Add</Button>
+        </Box>
       </Flex>
     </Flex>
   );
