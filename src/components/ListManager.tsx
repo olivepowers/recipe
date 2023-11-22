@@ -38,6 +38,12 @@ const ListManager = ({
     onUpdateList(updatedItems);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleAddItem();
+    }
+  };
+
   return (
     <Flex direction="column" gap="3">
       <label style={items.length == 0 ? { marginBottom: -14 } : {}}>
@@ -74,6 +80,7 @@ const ListManager = ({
             style={{ flex: 1 }}
             onChange={handleInputChange}
             placeholder={inputPlaceholder}
+            onKeyDown={handleKeyDown}
           />
         </Box>
         <Box width="6">

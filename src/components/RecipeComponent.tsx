@@ -20,7 +20,7 @@ const RecipeComponent: React.FC<{ recipe: Recipe }> = ({ recipe }) => {
   };
 
   return (
-    <Card size="2" onClick={handleClick}>
+    <Card size="2" onClick={handleClick} style={{ cursor: "pointer" }}>
       <Flex gap="5" align="center">
         <Box>
           <Text as="div" size="4" weight="bold">

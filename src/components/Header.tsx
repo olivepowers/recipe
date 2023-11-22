@@ -1,10 +1,16 @@
 import React from "react";
 import { Avatar, Button, Flex } from "@radix-ui/themes";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 
 const Header = () => {
   const router = useRouter();
+  const { data: session } = useSession();
+
+  const userFallback = session?.user?.name ? session.user?.name[0] : "OP";
+  const userImage = session?.user?.image;
+  console.log(userImage);
 
   return (
     <Flex
@@ -21,7 +27,12 @@ const Header = () => {
       </Link>
       <Flex gap="4" align="center">
         <div onClick={() => router.push("/profile")}>
-          <Avatar color="cyan" radius="full" fallback="OP" />
+          <Avatar
+            color="cyan"
+            radius="full"
+            src={userImage || ""}
+            fallback={userFallback}
+          />
         </div>
       </Flex>
     </Flex>

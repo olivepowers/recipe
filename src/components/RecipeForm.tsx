@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
+  Checkbox,
   Dialog,
   Flex,
   Select,
@@ -183,10 +184,7 @@ const RecipeForm = ({
             <Flex>
               <Text size="2">
                 <label>
-                  <Switch
-                    mr="2"
-                    radius="full"
-                    defaultChecked
+                  <Checkbox
                     onCheckedChange={handleChangeStatus}
                     checked={recipeData.status == "havemade"}
                   />{" "}
